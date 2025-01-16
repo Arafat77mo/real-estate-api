@@ -77,7 +77,7 @@ Use the `/api/properties` endpoint with query parameters to filter results:
 
 Example:
 ```bash
-GET /api/properties?location=New%20York&min_price=100000&max_price=500000&bedrooms=3
+GET /api/properties?q=test
 ```
 
 ## Media Uploads
