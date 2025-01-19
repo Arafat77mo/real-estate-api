@@ -109,4 +109,7 @@ return [
 'uploaded' => 'The :attribute failed to upload.',
 'url' => 'The :attribute format is invalid.',
 'uuid' => 'The :attribute must be a valid UUID.',
+    'latitude' => 'Latitude must be between -90 and 90.',
+    'longitude' => 'Longitude must be between -180 and 180.',
+
 ];

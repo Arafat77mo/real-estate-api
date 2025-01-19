@@ -16,7 +16,6 @@
         "laravel/tinker": "^2.9",
         "nwidart/laravel-modules": "^11.1",
         "spatie/laravel-medialibrary": "^11.12",
-        "spatie/laravel-multitenancy": "4.0",
         "spatie/laravel-permission": "^6.10",
         "spatie/laravel-translatable": "^6.9"
     },

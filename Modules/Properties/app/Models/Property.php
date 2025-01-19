@@ -5,6 +5,7 @@ namespace Modules\Properties\App\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,19 +13,41 @@ use Spatie\Translatable\HasTranslations;
 
 class Property extends Model implements HasMedia
 {
-    use HasFactory, Searchable,HasTranslations, InteractsWithMedia;
+    use HasFactory, Searchable,HasTranslations, InteractsWithMedia,SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['name', 'description', 'location', 'price', 'status', 'user_id'];
+    protected $fillable = [
+        'name',
+        'description',
+        'location',
+        'price',
+        'status',
+        'user_id' ,
+        'latitude',  // عمود خطوط العرض
+        'longitude', // عمود خطوط الطول
+        'rooms',
+        'bathrooms',
+        'living_room_size',
+        'additional_features',
+        'type',
+        'created_at',
+        'updated_at'
+];
 
     /**
      * The attributes that can be translated.
      */
     public array $translatable = ['name', 'description'];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('latest', function ($query) {
+            $query->orderBy('created_at', 'desc');
+        });
 
+    }
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id'); // Property belongs to a user
@@ -32,13 +55,7 @@ class Property extends Model implements HasMedia
     /**
      * Register media collections for the property.
      */
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('property_images')
-            ->singleFile()
-            ->acceptsMimeTypes(['image/jpeg', 'image/png'])
-          ; // Max size 2MB
-    }
+
 
     /**
      * Scope for filtering properties by location.
@@ -69,6 +86,13 @@ class Property extends Model implements HasMedia
             'description' => $this->description,
             'location' => $this->location,
             'price' => $this->price,
+            'rooms' => $this->rooms,
+            'bathrooms' => $this->bathrooms,
+            'living_room_size' => $this->living_room_size,
+            'type' => $this->type,
         ];
     }
+
+
+
 }

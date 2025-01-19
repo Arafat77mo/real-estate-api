@@ -22,7 +22,14 @@ class CreatePropertyRequest extends FormRequest
             'price' => 'required|numeric',
             'status' => 'required|in:active,inactive',
             'property_images' => 'sometimes|array', // Not required: It is only checked if provided
-            'property_images.*' => 'image|mimes:jpeg,png|max:2048', // Image validation
+            'property_images.*' => 'image|mimes:jpeg,png|max:3000', // Image validation
+            'latitude' => 'nullable|numeric|between:-90,90', // Validates latitude between -90 and 90
+            'longitude' => 'nullable|numeric|between:-180,180', // Validates longitude between -180 and 180
+            'rooms' => 'required|integer|min:0', // Validate number of rooms
+            'bathrooms' => 'required|integer|min:0', // Validate number of bathrooms
+            'living_room_size' => 'required|numeric|min:0', // Validate living room size
+            'additional_features' => 'nullable|string', // Optional field for additional features
+            'type' => 'required|in:apartment,villa,land,office,commercial', // Validate 'type'
         ];
     }
 
@@ -40,6 +47,10 @@ class CreatePropertyRequest extends FormRequest
             'property_images.*.image' => trans('validation.image'),
             'property_images.*.mimes' => trans('validation.mimes'),
             'property_images.*.max' => trans('validation.max_size'),
+            'latitude.between' => trans('validation.latitude'),
+            'longitude.between' => trans('validation.longitude'),
+            'integer' => trans('validation.integer'),
+            'min' => trans('validation.min'),
         ];
     }
 

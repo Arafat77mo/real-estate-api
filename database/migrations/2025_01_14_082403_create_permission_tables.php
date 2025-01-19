@@ -38,7 +38,6 @@ return new class extends Migration
             //$table->engine('InnoDB');
             $table->bigIncrements('id'); // role id
             $table->unsignedBigInteger('tenant_id');
-            $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
             if ($teams || config('permission.testing')) { // permission.testing is a fix for sqlite testing
                 $table->unsignedBigInteger($columnNames['team_foreign_key'])->nullable();
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');

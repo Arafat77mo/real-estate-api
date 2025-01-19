@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Observers\PropertyObserver;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
+use Modules\Properties\App\Models\Property;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
                 return true;  // Allow all entries in local
             });
         }
+
+        Property::observe(PropertyObserver::class);
+
     }
 }

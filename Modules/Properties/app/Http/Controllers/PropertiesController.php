@@ -4,6 +4,7 @@ namespace Modules\Properties\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Properties\App\Http\Requests\CreatePropertySearchRequest;
 use Modules\Properties\app\Http\Requests\UpdatePropertyRequest;
 use Modules\Properties\App\Services\PropertyService;
 use Modules\Properties\App\Http\Requests\CreatePropertyRequest;
@@ -80,11 +81,12 @@ class PropertiesController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(CreatePropertySearchRequest  $request): JsonResponse
     {
-        $query = $request->input('q');  // جلب النص المُدخل من المستخدم
+        $validated = $request->validated();
 
-        $properties = $this->propertyService->getAllProperties($query);
+
+        $properties = $this->propertyService->getAllProperties($validated);
         return ResponseData::send('success', trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
     }
 }

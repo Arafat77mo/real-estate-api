@@ -14,18 +14,18 @@ use Modules\Properties\App\Http\Controllers\PropertiesController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('properties', PropertiesController::class)->names('properties');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('properties', [PropertiesController::class, 'store']);
+
+// تحديث عقار
+    Route::post('properties/{id}', [PropertiesController::class, 'update']);
+
+// عرض تفاصيل عقار
+    Route::get('properties/{id}', [PropertiesController::class, 'show']);
+
+// عرض جميع العقارات
+    Route::get('properties', [PropertiesController::class, 'index']);
 });
 
 
-Route::post('properties', [PropertiesController::class, 'store']);
 
-// تحديث عقار
-Route::post('properties/{id}', [PropertiesController::class, 'update']);
-
-// عرض تفاصيل عقار
-Route::get('properties/{id}', [PropertiesController::class, 'show']);
-
-// عرض جميع العقارات
-Route::get('properties', [PropertiesController::class, 'index']);
