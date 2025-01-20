@@ -3,7 +3,9 @@
 namespace Modules\Properties\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Properties\App\Policies\PropertyPolicy;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -21,6 +23,8 @@ class PropertiesServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Gate::define('delete-property', [PropertyPolicy::class, 'delete']);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();

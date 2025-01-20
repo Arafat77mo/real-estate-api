@@ -23,6 +23,13 @@ class UpdatePropertyRequest extends FormRequest
             'status' => 'required|in:active,inactive',
             'property_images' => 'sometimes|array', // Not required: It is only checked if provided
             'property_images.*' => 'image|mimes:jpeg,png|max:2048', // Image validation (if provided)
+            'latitude' => 'nullable|numeric|between:-90,90', // Validates latitude between -90 and 90
+            'longitude' => 'nullable|numeric|between:-180,180', // Validates longitude between -180 and 180
+            'rooms' => 'required|integer|min:0', // Validate number of rooms
+            'bathrooms' => 'required|integer|min:0', // Validate number of bathrooms
+            'living_room_size' => 'required|numeric|min:0', // Validate living room size
+            'additional_features' => 'nullable|string', // Optional field for additional features
+            'type' => 'required|in:apartment,villa,land,office,commercial', // Validate 'type'
         ];
 
 
@@ -48,12 +55,21 @@ class UpdatePropertyRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => trans('validation.attributes.name'),
-            'description' => trans('validation.attributes.description'),
-            'location' => trans('validation.attributes.location'),
-            'price' => trans('validation.attributes.price'),
-            'status' => trans('validation.attributes.status'),
-            'property_images' => trans('validation.attributes.property_images'),
+            'required' => trans('validation.required'),
+            'string' => trans('validation.string'),
+            'max' => trans('validation.max'),
+            'numeric' => trans('validation.numeric'),
+            'in' => trans('validation.in'),
+            'array' => trans('validation.array'),
+            'mimes' => trans('validation.mimes'),
+            'image' => trans('validation.image'),
+            'property_images.*.image' => trans('validation.image'),
+            'property_images.*.mimes' => trans('validation.mimes'),
+            'property_images.*.max' => trans('validation.max_size'),
+            'latitude.between' => trans('validation.latitude'),
+            'longitude.between' => trans('validation.longitude'),
+            'integer' => trans('validation.integer'),
+            'min' => trans('validation.min'),
         ];
     }
 

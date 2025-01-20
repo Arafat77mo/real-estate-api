@@ -19,12 +19,18 @@ return [
         'list_retrieved' => 'List retrieved successfully.',
         'updated' => 'Property updated successfully.',
         'found' => 'Property found.',
+        'deleted' => 'Property deleted successfully.',
+
 
     ],
     'error' => [
         'creation_failed' => 'Failed to create property.',
         'not_found' => 'Property not found.',
         'update_failed' => 'Failed to update property.',
+        'deleted' => 'Failed to delete the property.',
+        'authorization' => 'You do not have permission to delete this property',
+
+
     ],
 
 ];

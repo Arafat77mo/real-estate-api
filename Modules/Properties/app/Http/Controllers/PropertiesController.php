@@ -18,6 +18,7 @@ class PropertiesController extends Controller
 
     public function __construct(PropertyService $propertyService)
     {
+
         $this->propertyService = $propertyService;
     }
 
@@ -34,7 +35,7 @@ class PropertiesController extends Controller
 
             $property = $this->propertyService->create(array_merge(
                 $request->validated(),
-                ['user_id' =>  2] // Assign the authenticated user's ID to the property
+                ['user_id' =>  $user->id] // Assign the authenticated user's ID to the property
             ));
             return ResponseData::send('success', trans('properties.success.created'), new PropertyResource($property));
 
@@ -89,4 +90,23 @@ class PropertiesController extends Controller
         $properties = $this->propertyService->getAllProperties($validated);
         return ResponseData::send('success', trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
     }
+
+    public function delete($id)
+    {
+        try {
+            $property = $this->propertyService->delete($id);
+            if ($property) {
+                return ResponseData::send('success', trans('properties.success.deleted'));
+            }
+            else{
+                return ResponseData::send('error', trans('properties.error.authorization'));
+
+            }
+        } catch (\Exception $e) {
+            return ResponseData::send('error', trans('properties.error.deleted'), [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
 }

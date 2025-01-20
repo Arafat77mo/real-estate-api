@@ -4,6 +4,7 @@ namespace Modules\Properties\App\Services;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Gate;
 use Modules\Properties\App\Models\Property;
 use Modules\Properties\app\Traits\SearchableTrait;
 use function Laravel\Prompts\search;
@@ -90,5 +91,28 @@ class PropertyService
 
         return $properties;
     }
+
+    public function delete(int $id)
+    {
+        // جلب العقار بناءً على الـ ID
+        $property = Property::findOrFail($id);
+
+        // التحقق إذا كان المستخدم هو صاحب العقار
+        if ($property->user_id !== auth()->id()) {
+            return false;
+        }
+        // مسح جميع الصور المرتبطة بالعقار
+        $property->clearMediaCollection('property_images');
+
+        // حذف العقار
+        $property->delete();
+
+        return true;
+    }
+
+    public function authorize($action, $property)
+    {
+        $user = auth()->user(); // Ensure you're getting the currently authenticated user
+        return Gate::allows($action, $property);    }
 
 }

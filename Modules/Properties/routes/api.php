@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 // عرض تفاصيل عقار
     Route::get('properties/{id}', [PropertiesController::class, 'show']);
+    Route::delete('properties/{id}', [PropertiesController::class, 'delete']);
 
 // عرض جميع العقارات
     Route::get('properties', [PropertiesController::class, 'index']);

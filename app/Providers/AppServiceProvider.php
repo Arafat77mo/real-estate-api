@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Observers\PropertyObserver;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Modules\Properties\App\Models\Property;
+use Modules\Properties\App\Policies\PropertyPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Property::observe(PropertyObserver::class);
+        Gate::define('delete', [PropertyPolicy::class, 'delete']);
+
 
     }
 }

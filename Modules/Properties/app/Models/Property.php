@@ -10,6 +10,7 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 
 class Property extends Model implements HasMedia
 {
@@ -45,6 +46,11 @@ class Property extends Model implements HasMedia
     {
         static::addGlobalScope('latest', function ($query) {
             $query->orderBy('created_at', 'desc');
+        });
+        static::addGlobalScope('owner', function (Builder $builder) {
+            // إضافة شرطين: user_id و deleted_at
+            $builder->where('user_id', auth()->id())
+                ->whereNull('deleted_at');
         });
 
     }
