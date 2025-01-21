@@ -53,11 +53,7 @@ trait SearchableTrait
      * استرجاع فئة الفلتر بناءً على الفلتر المدخل.
      *
      * @param Filter $filter
-     * @return TypeFilter
-     * @return TypeFilter
-     * @return TypeFilter
-     * @return TypeFilter
-     * @return TypeFilter
+
      */
     protected function getFilterClass(Filter $filter)
     {
