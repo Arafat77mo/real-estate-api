@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace Modules\Notification\app\Jobs;
 
 use App\Models\Notification;
 use App\Models\User;

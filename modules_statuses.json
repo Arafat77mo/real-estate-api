@@ -1,4 +1,5 @@
 {
     "Auth": true,
-    "Properties": true
+    "Properties": true,
+    "Notification": true
 }

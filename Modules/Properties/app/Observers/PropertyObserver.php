@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Observers;
+namespace Modules\Properties\app\Observers;
 
-use App\Jobs\SaveNotificationJob;
-use App\Notifications\PropertyActionNotification;
+use Modules\Notification\app\Jobs\SaveNotificationJob;
+use Modules\Notification\app\Notifications\PropertyActionNotification;
 use Modules\Properties\App\Models\Property;
 
 class PropertyObserver
