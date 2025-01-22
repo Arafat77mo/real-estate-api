@@ -17,7 +17,7 @@ A robust and scalable backend API for managing real estate properties. Built usi
 - **Pagination**: 
    - Efficient pagination using `fastPaginate` for handling large datasets without compromising performance.
 
-- **Users and Roles**: 
+- **Users and Roles && Permission**: 
    - Manage users with specific roles like `owner`, `user`, etc. 
    - Assign roles to users and manage permissions for different types of users.
 
