@@ -3,7 +3,9 @@
 namespace Modules\Auth\app\Services\Admin;
 
 use Exception;
+use http\Client\Curl\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
@@ -15,43 +17,67 @@ class RoleService
      * @param array $data
      * @return Role
      */
+
     public function createRole(array $data)
     {
-            $role = Role::create(['name' => $data['name']]);
+
+        DB::beginTransaction();
+
+        try {
+            // إنشاء الدور
+            $role = Role::create([
+                'name' => $data['name'],
+                'user_id' => auth()->user()->id,
+            ]);
 
             // إضافة الأذونات إذا كانت موجودة
             if (isset($data['permissions'])) {
-                $role->permissions()->sync($data['permissions']); // إضافة الأذونات
+                if (is_string($data['permissions'])) {
+                    $data['permissions'] = explode(',', $data['permissions']);
+                }
+
+                $role->permissions()->sync($data['permissions']);
             }
 
+            DB::commit(); // حفظ التغييرات في قاعدة البيانات
             return $role;
 
+        } catch (\Exception $e) {
+            DB::rollBack(); // إلغاء جميع العمليات
+            throw $e; // إرسال الخطأ للاستفادة منه
+        }
     }
 
-
-    /**
-     * Update an existing role along with permissions.
-     *
-     * @param int $roleId
-     * @param array $data
-     * @return Role
-     */
     public function updateRole(int $roleId, array $data)
     {
+        DB::beginTransaction();
 
+        try {
             // العثور على الدور
             $role = Role::findOrFail($roleId);
 
             // تحديث اسم الدور
-            $role->update(['name' => $data['name']]);
+            $role->update([
+                'name' => $data['name'],
+                'user_id' => auth()->user()->id,
+            ]);
 
-            // تحديث الأذونات
+            // تحديث الأذونات إذا كانت موجودة
             if (isset($data['permissions'])) {
-                $role->permissions()->sync($data['permissions']); // تحديث الأذونات
+                if (is_string($data['permissions'])) {
+                    $data['permissions'] = explode(',', $data['permissions']);
+                }
+
+                $role->permissions()->sync($data['permissions']);
             }
 
+            DB::commit(); // حفظ التغييرات في قاعدة البيانات
             return $role;
 
+        } catch (\Exception $e) {
+            DB::rollBack(); // إلغاء جميع العمليات
+            throw $e; // إرسال الخطأ للاستفادة منه
+        }
     }
 
     /**
@@ -78,6 +104,6 @@ class RoleService
      */
     public function getAllRoles()
     {
-        return Role::all();
+        return Role::fastPaginate(50);
     }
 }

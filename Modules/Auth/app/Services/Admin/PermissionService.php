@@ -68,6 +68,6 @@ class PermissionService
      */
     public function getAllPermissions()
     {
-        return Permission::all();
+        return Permission::fastPaginate(50);
     }
 }

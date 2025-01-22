@@ -11,37 +11,16 @@ class CreateUserRequest extends FormRequest
      */
     public function rules()
     {
-        switch ($this->method()) {
-            case 'POST':
-                if ($this->is('api/register')) {
+
                     return [
                         'name' => 'required|string|max:255',
-                        'email' => 'required|string|email|max:255|unique:users',
+                        'email' => 'required|string|email|max:255',
                         'password' => 'required|string|min:8',
                         'type' => 'required|in:owner,user', // التحقق من أن الحقل type يحتوي على واحدة من القيم المسموحة
+                        'role' => 'required|exists:roles,name',
+                    ];
 
-                    ];
-                } elseif ($this->is('api/login')) {
-                    return [
-                        'email' => 'required|email',
-                        'password' => 'required|string',
-                    ];
-                } elseif ($this->is('api/password/email')) {
-                    return [
-                        'email' => 'required|email',
-                    ];
-                } elseif ($this->is('api/password/reset')) {
-                    return [
-                        'token' => 'required|string',
-                        'email' => 'required|email',
-                        'password' => 'required|string|min:8|confirmed',
-                    ];
-                }
-                break;
 
-            default:
-                return [];
-        }
     }
 
     /**

@@ -18,8 +18,7 @@ class AdminService
         ]);
 
         // Assign default role (based on type)
-        $role = Role::where('name', $validatedData['type'])->first();
-        $user->assignRole($role);
+        $user->assignRole($validatedData['role']);
 
         return $user;
     }
@@ -33,13 +32,13 @@ class AdminService
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => isset($validatedData['password']) ? Hash::make($validatedData['password']) : $user->password,
+            'type' => $validatedData['type'],
+
         ]);
 
-        // Optionally update the user's role
-        if (isset($validatedData['type'])) {
-            $role = Role::where('name', $validatedData['type'])->first();
-            $user->syncRoles($role);
-        }
+            $user->assignRole($validatedData['role']);
+
+
 
         return $user;
     }
