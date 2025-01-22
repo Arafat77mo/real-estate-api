@@ -44,8 +44,55 @@ A robust and scalable backend API for managing real estate properties. Built usi
    ```bash
    git clone git@github.com:Arafat77mo/real-estate-api.git
 
-تحرير
+## Development
 
+### Running Tests
+
+Run the PHPUnit tests to ensure the application is working as expected:
+bash
+php artisan test
+
+
+### Compiling Assets
+
+Compile the frontend assets using Laravel Mix:
+bash
+npm run dev
+
+For production:
+bash
+npm run build
+
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch for your feature:
+   
+bash
+   git checkout -b feature-name
+
+3. Commit your changes:
+   
+bash
+   git commit -m "Add a meaningful commit message"
+
+4. Push to the branch:
+   
+bash
+   git push origin feature-name
+
+5. Create a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
+
+### Author
+
+Developed by Muhammad Arafat.
 ### Explanation of the Changes:
 - **Users and Roles**: Added endpoints for user management (create, update, delete users), role assignment, and role-based access control.
 - **Notifications**: Included functionality to send and retrieve notifications for users.
