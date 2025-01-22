@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Properties\App\Http\Controllers\PropertiesController;
+use Modules\Properties\app\Http\Controllers\Owner\PropertiesController;
 
 /*
 |--------------------------------------------------------------------------

@@ -1,14 +1,11 @@
 <?php
 
-namespace Modules\Properties\App\Services;
+namespace Modules\Properties\app\Services\Owner;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Modules\Properties\App\Models\Property;
 use Modules\Properties\app\Traits\SearchableTrait;
-use function Laravel\Prompts\search;
-use Hammerstone\FastPaginate\FastPaginate;
 
 class PropertyService
 {

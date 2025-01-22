@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Properties\app\Transformers;
+namespace Modules\Properties\app\Transformers\Owner;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -14,7 +14,6 @@ class PropertyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'owner' => $this->user_id,
             'name' => $this->name,
             'location' => $this->location,
             'price' => number_format($this->price, 2), // Format price with two decimal places

@@ -20,6 +20,36 @@ return [
     'unique' => 'لقد تم تسجيل هذا :attribute بالفعل.',
     'confirmed' => 'التأكيد غير متطابق.',
     'boolean' => 'يجب أن يكون :attribute قيمة منطقية (صح/خطأ).',
+    'users_fetched' => 'تم جلب المستخدمين بنجاح.',
+    'user_fetched' => 'تم جلب المستخدم بنجاح.',
+    'user_not_found' => 'المستخدم غير موجود.',
+    'user_created' => 'تم إنشاء المستخدم بنجاح.',
+    'user_creation_failed' => 'فشل في إنشاء المستخدم.',
+    'user_updated' => 'تم تحديث المستخدم بنجاح.',
+    'user_update_failed' => 'فشل في تحديث المستخدم.',
+    'user_deleted' => 'تم حذف المستخدم بنجاح.',
+    'user_deletion_failed' => 'فشل في حذف المستخدم.',
+
+    'role_created' => 'تم إنشاء الدور بنجاح',
+    'role_get' => 'الادوار',
+    'role_get_failed' => 'فشل جلب الادوار',
+    'role_updated' => 'تم تحديث الدور بنجاح',
+    'role_deleted' => 'تم حذف الدور بنجاح',
+    'role_creation_failed' => 'فشل إنشاء الدور',
+    'role_update_failed' => 'فشل تحديث الدور',
+    'role_deletion_failed' => 'فشل حذف الدور',
+
+    // Permission Messages
+    'permission_created' => 'تم إنشاء الصلاحية بنجاح',
+    'permission_updated' => 'تم تحديث الصلاحية بنجاح',
+    'permission_deleted' => 'تم حذف الصلاحية بنجاح',
+    'permission_creation_failed' => 'فشل إنشاء الصلاحية',
+    'permission_update_failed' => 'فشل تحديث الصلاحية',
+    'permission_deletion_failed' => 'فشل حذف الصلاحية',
+    'permission_get_failed' => 'فشل جلب الصلاحيات',
+    'permission_get' => 'الصلاحيات',
+
+
 
 
 ];

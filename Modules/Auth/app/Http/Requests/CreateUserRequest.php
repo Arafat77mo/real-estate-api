@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Auth\App\Http\Requests;
+namespace Modules\Auth\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateAuthRequest extends FormRequest
+class CreateUserRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

@@ -20,6 +20,7 @@ class AuthService
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'type' => $validatedData['type'],
         ]);
     }
 

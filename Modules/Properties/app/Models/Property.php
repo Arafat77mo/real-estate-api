@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
+use Modules\Properties\app\Models\Scopes\ActiveAndNotOwnerScope;
+use Modules\Properties\app\Models\Scopes\OwnerScope;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Builder;
 
 class Property extends Model implements HasMedia
 {
@@ -44,15 +45,20 @@ class Property extends Model implements HasMedia
 
     protected static function booted()
     {
+        // Always apply the 'latest' global scope
         static::addGlobalScope('latest', function ($query) {
             $query->orderBy('created_at', 'desc');
         });
-        static::addGlobalScope('owner', function (Builder $builder) {
-            // إضافة شرطين: user_id و deleted_at
-            $builder->where('user_id', auth()->id())
-                ->whereNull('deleted_at');
-        });
 
+        // Check if user is authenticated and if their type is 'owner'
+        if (auth()->check() && auth()->user()->type === 'owner') {
+            static::addGlobalScope('owner', new OwnerScope());
+        }
+
+        // If the user is not 'owner', apply 'active_and_not_owner' scope
+        if (auth()->check() && auth()->user()->type !== 'owner') {
+            static::addGlobalScope('active_and_not_owner', new ActiveAndNotOwnerScope());
+        }
     }
     public function owner()
     {
