@@ -1,74 +1,12 @@
-Skip to content
-Navigation Menu
-Arafat77mo
-real-estate-api
+# Real Estate API
 
-Type / to search
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-real-estate-api
-/
-README.md
-in
-main
+This API is designed to manage real estate properties, handle media uploads, and perform advanced search queries. It includes user and role management, notifications, and job handling.
 
-Edit
+## Installation and Setup
 
-Preview
-Indent mode
-
-Spaces
-Indent size
-
-4
-Line wrap mode
-
-Soft wrap
-Editing README.md file contents
-1
-2
-# API لإدارة العقارات
-
-API قوية وقابلة للتوسع لإدارة العقارات. تم بناء هذه الواجهة باستخدام Laravel وتوفر ميزات لإدارة العقارات، تحميل الوسائط، إضافة الوظائف المتقدمة للبحث، إدارة المستخدمين، الأدوار، الإشعارات، والمهام.
-
-## الميزات
-
-- **إدارة العقارات**: 
-   - إنشاء، تحديث، حذف، وعرض العقارات مع المواصفات التفصيلية مثل الموقع، السعر، الحجم، إلخ.
-   - العمليات الأساسية لإدارة تفاصيل العقار.
-   
-- **إدارة الوسائط**: 
-   - رفع وإدارة الصور والفيديوهات المرتبطة بالعقارات مثل صور العقار، صور الغلاف، والفيديوهات.
-   
-- **البحث المتقدم**: 
-   - تصفية العقارات بناءً على معايير متعددة مثل الموقع، السعر، الحجم، وعدد الغرف.
-
-- **الصفحات**: 
-   - تصفية نتائج العقارات باستخدام `fastPaginate` لضمان الأداء مع كميات كبيرة من البيانات.
-
-- **إدارة المستخدمين والأدوار**: 
-   - إدارة المستخدمين مع أدوار مثل `المالك`، `المستخدم`.
-   - تعيين الأدوار للمستخدمين وإدارة الصلاحيات للوصول إلى النظام.
-
-- **الإشعارات**: 
-   - إرسال إشعارات للمستخدمين مثل التنبيهات حول العقارات الجديدة، التحديثات، أو أي إجراءات أخرى.
-
-- **المهام**: 
-   - استخدام نظام الطوابير في Laravel لإدارة المهام في الخلفية مثل إرسال رسائل البريد الإلكتروني، معالجة الملفات، والمهام الأخرى.
-
-- **واجهة RESTful**: 
-   - تم تصميم الواجهة وفقًا لمبادئ REST لسهولة التكامل مع التطبيقات الأمامية والخدمات الخارجية.
-
-## المتطلبات
-
-- PHP >= 8.1
+### 1. Navigate to the project folder:
+```bash
+cd real-estate-api
 - Composer
 - MySQL
 - Laravel >= 10
