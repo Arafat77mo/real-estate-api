@@ -32,10 +32,10 @@ A robust and scalable backend API for managing real estate properties. Built usi
 
 ## Prerequisites
 
-- PHP >= 8.1
+- PHP >= 8.2
 - Composer
 - MySQL
-- Laravel >= 10
+- Laravel >= 11
 - Node.js & npm (for asset compilation)
 
 ## Installation
