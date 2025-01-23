@@ -3,6 +3,7 @@
 namespace Modules\Properties\app\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Modules\Properties\App\Helpers\ResponseData;
 use Modules\Properties\App\Http\Requests\CreatePropertyRequest;
@@ -32,13 +33,13 @@ class PropertiesController extends Controller
     public function store(CreatePropertyRequest $request): JsonResponse
     {
 
-            $user = auth()->user();
+        $user = auth()->user();
 
-            $property = $this->propertyService->create(array_merge(
-                $request->validated(),
-                ['user_id' =>  $user->id] // Assign the authenticated user's ID to the property
-            ));
-            return ResponseData::send('success', trans('properties.success.created'), new ShowPropertyResource($property));
+        $property = $this->propertyService->create(array_merge(
+            $request->validated(),
+            ['user_id' => $user->id] // Assign the authenticated user's ID to the property
+        ));
+        return ResponseData::send(trans('messages.success'), trans('properties.success.created'), new ShowPropertyResource($property));
 
     }
 
@@ -47,14 +48,12 @@ class PropertiesController extends Controller
         try {
             // الحصول على العقار بناءً على الـ ID
             $property = $this->propertyService->getById($id);
-
-
             // تمرير البيانات المحدثة إلى خدمة الـ Property
             $updatedProperty = $this->propertyService->update($property, $request->validated());
 
-            return ResponseData::send('success', trans('properties.success.updated'), new ShowPropertyResource($updatedProperty));
-        } catch (\Exception $e) {
-            return ResponseData::send('error', trans('properties.error.update_failed'), [
+            return ResponseData::send(trans('messages.success'), trans('properties.success.updated'), new ShowPropertyResource($updatedProperty));
+        } catch (Exception $e) {
+            return ResponseData::send(trans('messages.error'), trans('properties.error.update_failed'), [
                 'error' => $e->getMessage(),
             ]);
         }
@@ -69,10 +68,17 @@ class PropertiesController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
+
             $property = $this->propertyService->getById($id);
-            return ResponseData::send('success', trans('properties.success.found'), new ShowPropertyResource($property));
-        } catch (\Exception $e) {
-            return ResponseData::send('error', trans('properties.error.not_found'), [
+            if ($property) {
+                return ResponseData::send(trans('messages.success'), trans('properties.success.found'), new ShowPropertyResource($property));
+
+            }
+
+            return ResponseData::send(trans('messages.error'), trans('properties.error.not_found')
+            );
+        } catch (Exception $e) {
+            return ResponseData::send(trans('messages.error'), trans('properties.error.not_found'), [
                 'error' => $e->getMessage(),
             ]);
         }
@@ -83,13 +89,12 @@ class PropertiesController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(CreatePropertySearchRequest  $request): JsonResponse
+    public function index(CreatePropertySearchRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
-
         $properties = $this->propertyService->getAllProperties($validated);
-        return ResponseData::send('success', trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
+        return ResponseData::send(trans('messages.success'), trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
     }
 
     public function delete($id)
@@ -97,14 +102,13 @@ class PropertiesController extends Controller
         try {
             $property = $this->propertyService->delete($id);
             if ($property) {
-                return ResponseData::send('success', trans('properties.success.deleted'));
-            }
-            else{
-                return ResponseData::send('error', trans('properties.error.authorization'));
+                return ResponseData::send(trans('messages.success'), trans('properties.success.deleted'));
+            } else {
+                return ResponseData::send(trans('messages.error'), trans('properties.error.authorization'));
 
             }
-        } catch (\Exception $e) {
-            return ResponseData::send('error', trans('properties.error.deleted'), [
+        } catch (Exception $e) {
+            return ResponseData::send(trans('messages.error'), trans('properties.error.deleted'), [
                 'error' => $e->getMessage(),
             ]);
         }

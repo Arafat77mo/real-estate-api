@@ -3,11 +3,12 @@
 namespace Modules\Properties\app\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Modules\Properties\App\Helpers\ResponseData;
 use Modules\Properties\App\Http\Requests\CreatePropertySearchRequest;
-use Modules\Properties\app\Services\Owner\PropertyService;
-use Modules\Properties\app\Transformers\Owner\PropertyResource;
+use Modules\Properties\app\Services\User\PropertyService;
+use Modules\Properties\app\Transformers\PropertyResource;
 
 class PropertiesController extends Controller
 {
@@ -31,7 +32,7 @@ class PropertiesController extends Controller
         try {
             $property = $this->propertyService->getById($id);
             return ResponseData::send('success', trans('properties.success.found'), new PropertyResource($property));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ResponseData::send('error', trans('properties.error.not_found'), [
                 'error' => $e->getMessage(),
             ]);
@@ -43,15 +44,33 @@ class PropertiesController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(CreatePropertySearchRequest  $request): JsonResponse
+    public function index(CreatePropertySearchRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
 
-        $properties = $this->propertyService->getAllProperties($validated);
-        return ResponseData::send('success', trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
+            $properties = $this->propertyService->getAllProperties($validated);
+            return ResponseData::send('success', trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
+
+        } catch (Exception $e) {
+            return ResponseData::send('error', trans('properties.error.not_found'), [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
+    public function recommendProperties()
+    {
+        try {
+            $properties = $this->propertyService->recommendProperties();
+            return ResponseData::send('success', trans('properties.success.list_retrieved'), PropertyResource::collection($properties));
+        } catch (Exception $e) {
+            return ResponseData::send('error', trans('properties.error.not_found'), [
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
 
 
 }

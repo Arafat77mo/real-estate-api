@@ -1,15 +1,15 @@
 <?php
-
 namespace Modules\Properties\app\Services\Owner;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Modules\Properties\App\Models\Property;
+use Modules\Properties\app\Traits\SaveUserSearch;
 use Modules\Properties\app\Traits\SearchableTrait;
 
 class PropertyService
 {
-    use SearchableTrait;
+    use SearchableTrait, SaveUserSearch;
 
     /**
      * Create a new property.
@@ -20,6 +20,7 @@ class PropertyService
     public function create(array $data): Property
     {
         $property = Property::create($data);
+
         // رفع الصور بعد إنشاء العقار
         if (isset($data['property_images'])) {
             foreach ($data['property_images'] as $image) {
@@ -27,13 +28,11 @@ class PropertyService
             }
         }
 
-
-
         return $property;
     }
 
     /**
-     * تحديث العقار.
+     * Update an existing property.
      *
      * @param Property $property
      * @param array $data
@@ -41,6 +40,10 @@ class PropertyService
      */
     public function update(Property $property, array $data): Property
     {
+        if ($property->user_id !== auth()->id()) {
+            return false;  // العودة بـ false إذا لم يكن المستخدم هو صاحب العقار
+        }
+
         $property->update($data);
 
         // رفع الصور إذا كانت موجودة
@@ -61,9 +64,17 @@ class PropertyService
      * @param int $id
      * @return Property
      */
-    public function getById(int $id): Property
+    public function getById(int $id): false|Property
     {
-        return Property::with('media')->findOrFail($id);
+        // جلب العقار بناءً على الـ ID
+        $property = Property::with('media')->findOrFail($id);
+
+        // التحقق إذا كان المستخدم هو صاحب العقار
+        if ($property->user_id !== auth()->id()) {
+            return false;  // العودة بـ false إذا لم يكن المستخدم هو صاحب العقار
+        }
+
+        return $property;
     }
 
     /**
@@ -74,22 +85,31 @@ class PropertyService
      */
     public function getAllProperties($request): LengthAwarePaginator
     {
-
         // Start building the query
         $query = Property::search($request['query'] ?? '');
 
         // Apply filters
         $query = $this->applyFilters($query, $request);
 
-        $properties= $query->fastPaginate(10000);
+        // تصفية العقارات بناءً على التحقق من ملكية العقار
+        $query = $query->where('user_id', auth()->id());
 
-        // تحميل العلاقة 'media' بعد البجنيشن
+
+        $properties = $query->fastPaginate(10000);
+
+        // تحميل العلاقات (media) بعد الباجنيشن
         $properties->load('media');
 
         return $properties;
     }
 
-    public function delete(int $id)
+    /**
+     * Delete a property by its ID.
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
     {
         // جلب العقار بناءً على الـ ID
         $property = Property::findOrFail($id);
@@ -98,6 +118,7 @@ class PropertyService
         if ($property->user_id !== auth()->id()) {
             return false;
         }
+
         // مسح جميع الصور المرتبطة بالعقار
         $property->clearMediaCollection('property_images');
 
@@ -106,10 +127,4 @@ class PropertyService
 
         return true;
     }
-
-    public function authorize($action, $property)
-    {
-        $user = auth()->user(); // Ensure you're getting the currently authenticated user
-        return Gate::allows($action, $property);    }
-
 }

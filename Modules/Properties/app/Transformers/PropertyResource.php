@@ -4,6 +4,7 @@ namespace Modules\Properties\app\Transformers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Auth\app\Transformers\UserResource;
 
 class PropertyResource extends JsonResource
 {
@@ -14,7 +15,7 @@ class PropertyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'owner' => $this->user_id,
+            'owner' => new UserResource($this->owner),
             'name' => $this->name,
             'location' => $this->location,
             'price' => number_format($this->price, 2), // Format price with two decimal places
@@ -22,8 +23,6 @@ class PropertyResource extends JsonResource
             'cover_image_url' => $this->whenLoaded('media', function () {
                 return $this->getCoverImageUrlAttribute();
             }),
-            'created_at' => $this->created_at->toDateString(), // Format created_at date
-            'updated_at' => $this->updated_at->toDateString(), // Format updated_at date
 
         ];
 

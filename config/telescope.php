@@ -44,6 +44,7 @@ return [
 
     'path' => env('TELESCOPE_PATH', 'telescope'),
 
+
     /*
     |--------------------------------------------------------------------------
     | Telescope Storage Driver
@@ -93,7 +94,6 @@ return [
 
     'middleware' => [
         'web',
-        Authorize::class,
     ],
 
     /*

@@ -10,6 +10,7 @@ use Modules\Properties\app\Filters\MaxPriceFilter;
 use Modules\Properties\app\Filters\PriceFilter;
 use Modules\Properties\app\Filters\RoomsFilter;
 use Modules\Properties\app\Filters\TypeFilter;
+use Modules\Properties\App\Models\Property;
 
 trait SearchableTrait
 {
@@ -74,4 +75,39 @@ trait SearchableTrait
                 return null;
         }
     }
+
+    protected function applyUsersFilters($request)
+    {
+
+        // Build the query with conditional filters
+        $query = Property::query();
+
+        if (!empty($request['location'])) {
+            $query->where('location', 'LIKE', '%' . $request['location'] . '%');
+        }
+
+        if (!empty($request['type'])) {
+            $query->where('type', $request['type']);
+        }
+
+        if (!empty($request['min_price'])) {
+            $query->where('price', '>=', $request['min_price']);
+        }
+
+        if (!empty($request['max_price'])) {
+            $query->where('price', '<=', $request['max_price']);
+        }
+
+        if (!empty($request['rooms'])) {
+            $query->where('rooms', $request['rooms']);
+        }
+
+        if (!empty($request['bathrooms'])) {
+            $query->where('bathrooms', $request['bathrooms']);
+        }
+
+        return $query->limit(10)->get();
+
+    }
+
 }
