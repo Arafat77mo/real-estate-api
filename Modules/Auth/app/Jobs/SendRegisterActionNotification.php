@@ -35,10 +35,8 @@ class SendRegisterActionNotification implements ShouldQueue
      */
     public function handle()
     {
-        // Send the notification to all admins
         $admins = User::role('admin')->get();
 
-        // Send the notification using the broadcast
         Notification::send($admins, new RgisterActionNotification($this->user, $this->action));
     }
 }
