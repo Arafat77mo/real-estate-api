@@ -66,4 +66,9 @@ class User extends Authenticatable
 
         ];
     }
+    public function canAccessProperty($propertyId)
+    {
+        return $this->properties()->where('id', $propertyId)->exists();
+    }
+
 }

@@ -2,10 +2,10 @@
 
 namespace Modules\Notification\app\Jobs;
 
-use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Modules\Notification\app\Models\Notification;
 use Modules\Properties\App\Models\Property;
 
 class SaveNotificationJob implements ShouldQueue

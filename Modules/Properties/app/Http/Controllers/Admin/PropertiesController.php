@@ -5,10 +5,8 @@ namespace Modules\Properties\app\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Modules\Properties\App\Helpers\ResponseData;
-use Modules\Properties\App\Http\Requests\CreatePropertyRequest;
 use Modules\Properties\App\Http\Requests\CreatePropertySearchRequest;
-use Modules\Properties\app\Http\Requests\UpdatePropertyRequest;
-use Modules\Properties\app\Services\Owner\PropertyService;
+use Modules\Properties\app\Services\Admin\PropertyService;
 use Modules\Properties\app\Transformers\PropertyResource;
 use Modules\Properties\app\Transformers\ShowPropertyResource;
 
