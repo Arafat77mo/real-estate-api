@@ -14,7 +14,7 @@ use Modules\Properties\app\Http\Controllers\user\PropertiesController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum','setLocale'])->group(function () {
         // عرض تفاصيل عقار بناءً على المعرف
         Route::get('property/{id}', [PropertiesController::class, 'show'])->name('properties.show');
 

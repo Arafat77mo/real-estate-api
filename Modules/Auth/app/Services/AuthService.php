@@ -1,7 +1,9 @@
 <?php
+
 namespace Modules\Auth\App\Services;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
@@ -11,23 +13,31 @@ class AuthService
     /**
      * Register a new user.
      *
-     * @param  array  $data
+     * @param array $data
      * @return User
      */
     public function register($validatedData)
     {
-        return User::create([
+        $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
             'type' => $validatedData['type'],
         ]);
+        if ($validatedData['type'] === 'owner') {
+
+            $user->assignRole('owner');
+
+        }
+        $user->assignRole('user');
+        return $user;
+
     }
 
     /**
      * Login the user and return an API token.
      *
-     * @param  array  $credentials
+     * @param array $credentials
      * @return string
      */
     public function login($credentials): array
@@ -35,7 +45,7 @@ class AuthService
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            throw new \Exception(__('messages.invalid_credentials'));
+            throw new Exception(__('messages.invalid_credentials'));
         }
 
         $token = $user->createToken('API Token')->plainTextToken;
@@ -49,7 +59,7 @@ class AuthService
     /**
      * Send the password reset link.
      *
-     * @param  array  $data
+     * @param array $data
      * @return string
      */
     public function sendPasswordResetLink($data)
@@ -57,7 +67,7 @@ class AuthService
         $status = Password::sendResetLink($data);
 
         if ($status !== Password::RESET_LINK_SENT) {
-            throw new \Exception(__('messages.unable_to_send_reset_link'));
+            throw new Exception(__('messages.unable_to_send_reset_link'));
         }
 
         return trans('auth.password_reset_link_sent');
@@ -66,7 +76,7 @@ class AuthService
     /**
      * Reset the password.
      *
-     * @param  array  $data
+     * @param array $data
      * @return void
      */
     public function resetPassword($data)
@@ -77,7 +87,7 @@ class AuthService
         });
 
         if ($status !== Password::PASSWORD_RESET) {
-            throw new \Exception(__('messages.password_reset_failed'));
+            throw new Exception(__('messages.password_reset_failed'));
         }
     }
 

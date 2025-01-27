@@ -14,7 +14,7 @@ use Modules\Notification\App\Http\Controllers\NotificationController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum','setLocale'])->group(function () {
     Route::get('notifications/unread', [NotificationController::class, 'getUnreadNotifications']);
     Route::get('notifications', [NotificationController::class, 'getNotifications']);
     Route::post('notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);

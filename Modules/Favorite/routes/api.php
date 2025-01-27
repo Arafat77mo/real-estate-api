@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Properties\app\Http\Controllers\Admin\PropertiesController;
+use Modules\Favorite\App\Http\Controllers\FavoriteController;
 
 /*
  *--------------------------------------------------------------------------
@@ -15,12 +15,10 @@ use Modules\Properties\app\Http\Controllers\Admin\PropertiesController;
 */
 
 Route::middleware(['auth:sanctum','setLocale'])->group(function () {
+    Route::apiResource('favorite', FavoriteController::class)->names('favorite');
 
+Route::post('/favorites/toggle', [FavoriteController::class, 'toggleFavorite'])->name('favorites.toggle');
 
-    Route::get('properties/{id}', [PropertiesController::class, 'show']);
-// عرض جميع العقارات
-    Route::get('properties', [PropertiesController::class, 'index']);
+// Get all user's favorites
+Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 });
-
-
-

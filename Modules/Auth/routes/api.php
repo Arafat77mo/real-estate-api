@@ -15,9 +15,7 @@ use Modules\Auth\App\Http\Controllers\AuthController;
  *
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('auth', AuthController::class)->names('auth');
-});
+Route::middleware(['setLocale'])->group(function () {
 
 
 // Registration Route
@@ -31,7 +29,7 @@ Route::post('password/email', [AuthController::class, 'sendPasswordResetLink']);
 
 // Reset password
 Route::post('password/reset', [AuthController::class, 'resetPassword']);
-
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

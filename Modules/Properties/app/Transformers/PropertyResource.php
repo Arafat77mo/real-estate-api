@@ -19,7 +19,6 @@ class PropertyResource extends JsonResource
             'name' => $this->name,
             'location' => $this->location,
             'price' => number_format($this->price, 2), // Format price with two decimal places
-            'status' => trans('status.' . $this->status), // Translate the status
             'cover_image_url' => $this->whenLoaded('media', function () {
                 return $this->getCoverImageUrlAttribute();
             }),
