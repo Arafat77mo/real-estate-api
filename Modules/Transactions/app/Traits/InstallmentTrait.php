@@ -11,6 +11,8 @@ trait InstallmentTrait
 
     public function createInstallments(PropertyTransaction $transaction, $durationMonths)
     {
+
+
         for ($i = 1; $i <= $durationMonths; $i++) {
             Installment::create([
                 'property_transaction_id' => $transaction->id,

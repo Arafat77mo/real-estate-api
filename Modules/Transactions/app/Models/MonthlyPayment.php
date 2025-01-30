@@ -15,8 +15,9 @@ class MonthlyPayment extends Model
 
     protected $fillable = [
         'user_id',
-        'property_id',
+        'property_transaction_id',
         'amount',
+        'property_id',
         'due_date',
         'payment_status',
         'next_due_date'
