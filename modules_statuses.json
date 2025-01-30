@@ -2,5 +2,6 @@
     "Auth": true,
     "Properties": true,
     "Notification": true,
-    "Favorite": true
+    "Favorite": true,
+    "Transactions": true
 }

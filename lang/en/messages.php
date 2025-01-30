@@ -40,4 +40,9 @@ return [
     'permission_deletion_failed' => 'Permission deletion failed',
     'permission_get_failed' => 'Permission get  failed',
     'permission_get' => 'get Permission',
+
+
+    'transaction_success' => 'Transaction processed successfully',
+    'invalid_payment_method' => 'Invalid payment method for installment',
+    'error_message' => 'An error occurred: :message',
 ];

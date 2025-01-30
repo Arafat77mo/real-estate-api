@@ -50,6 +50,8 @@ return [
     'permission_get' => 'الصلاحيات',
 
 
-
+    'transaction_success' => 'تم معالجة المعاملة بنجاح',
+    'invalid_payment_method' => 'طريقة الدفع غير صالحة للتقسيط',
+    'error_message' => 'حدث خطأ: :message',
 
 ];
