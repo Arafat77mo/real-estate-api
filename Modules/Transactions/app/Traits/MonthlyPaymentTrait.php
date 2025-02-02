@@ -2,6 +2,7 @@
 
 namespace Modules\Transactions\app\Traits;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Transactions\App\Models\MonthlyPayment;
 use Modules\Transactions\App\Models\PropertyTransaction;
 
@@ -9,33 +10,55 @@ trait MonthlyPaymentTrait
 {
     public function createMonthlyPayments(PropertyTransaction $transaction, $durationMonths)
     {
-        // التحقق إذا كان هناك سجل مع نفس property_id في جدول monthly_payments
-        $existingPayment = MonthlyPayment::where('property_id', $transaction->property_id)
-            ->whereDate('next_due_date', '2025-03-02') // التحقق إذا كانت next_due_date هي تاريخ اليوم
+        $monthlyAmount = $transaction->price;
+        $today = now();
+
+        // الحصول على الدفعة الموجودة مسبقاً لهذه المعاملة
+        $existingPayment = $this->getExistingPayment($transaction)->first();
+
+        // التحقق مما إذا كانت هناك دفعة مستحقة اليوم
+        $existingPaymentForToday = $this->getExistingPayment($transaction)
+            ->whereDate('due_date', $today->toDateString())
+            ->whereNot('payment_status', 'paid')
             ->first();
 
-        // إذا كان موجود، نقوم بتحديثه
-        if ($existingPayment) {
-            // إذا كان next_due_date يساوي تاريخ اليوم، نحدث due_date إلى تاريخ اليوم ونجعل الحالة "تم الدفع"
-            $existingPayment->update([
-                'due_date' => now(),  // تحديث due_date إلى تاريخ اليوم
-                'payment_status' => 'paid',  // تحديث حالة الدفع إلى مدفوع
-            ]);
-        } else {
-            // نبدأ من 1 لأخر دفعة
-            for ($i = 1; $i <= $durationMonths; $i++) {
-                // إذا كانت هذه هي الدفعة الأولى
-                $paymentStatus = ($i == 1) ? 'paid' : 'pending'; // تعيين حالة الدفع للدفعة الأولى "مدفوعه"
-
-                MonthlyPayment::create([
-                    'property_transaction_id' => $transaction->id,
-                    'amount' => $transaction->price,
-                    'due_date' => now()->addMonths($i),  // استخدام تاريخ الاستحقاق المتغير
-                    'payment_status' => $paymentStatus,  // تعيين الحالة كـ "مدفوع" للدفعة الأولى و"معلق" للباقي
-                    'next_due_date' => now()->addMonths($i),
-                    'property_id' => $transaction->property_id,  // إضافة property_id
+        DB::transaction(function () use ($existingPayment, $existingPaymentForToday, $transaction, $durationMonths, $monthlyAmount, $today) {
+            if ($existingPaymentForToday) {
+                // تحديث الدفعة المستحقة اليوم إلى "مدفوعة" وتحديث تاريخ الاستحقاق التالي
+                $existingPaymentForToday->update([
+                    'due_date' => $today,
+                    'payment_status' => 'paid',
                 ]);
+            } elseif (!$existingPayment) {
+                // إنشاء جميع الدفعات لأول مرة
+                // تجهيز البيانات للإدراج دفعة واحدة
+                $payments = [];
+
+                for ($i = 0; $i < $durationMonths; $i++) {
+                    $dueDate = $today->copy()->addMonths($i);
+                    $nextDueDate = $today->copy()->addMonths($i + 1);
+
+                    $payments[] = [
+                        'property_transaction_id' => $transaction->id,
+                        'amount' => $monthlyAmount,
+                        'due_date' => $dueDate,
+                        'payment_status' => $i == 0 ? 'paid' : 'pending',
+                        'next_due_date' => $nextDueDate,
+                        'property_id' => $transaction->property_id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+
+                // إدراج البيانات دفعة واحدة باستخدام insert
+                MonthlyPayment::insert($payments);
             }
-        }
+        });
     }
+
+    private function getExistingPayment($transaction)
+    {
+        return MonthlyPayment::where('property_transaction_id', $transaction->id);
+    }
+
 }

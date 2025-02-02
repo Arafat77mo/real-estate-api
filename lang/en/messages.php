@@ -45,4 +45,11 @@ return [
     'transaction_success' => 'Transaction processed successfully',
     'invalid_payment_method' => 'Invalid payment method for installment',
     'error_message' => 'An error occurred: :message',
+
+
+    'renters_report' => 'Renters Report Retrieved Successfully',
+    'installments_report' => 'Installments Report Retrieved Successfully',
+    'buyers_report' => 'Buyers Report Retrieved Successfully',
+    'renter_details' => 'Renter Details Retrieved Successfully',
+    'installment_details' => 'Installment Details Retrieved Successfully',
 ];

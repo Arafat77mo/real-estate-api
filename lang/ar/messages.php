@@ -54,4 +54,12 @@ return [
     'invalid_payment_method' => 'طريقة الدفع غير صالحة للتقسيط',
     'error_message' => 'حدث خطأ: :message',
 
+    'renters_report' => 'تم استرجاع تقرير المستأجرين بنجاح',
+    'installments_report' => 'تم استرجاع تقرير الأقساط بنجاح',
+    'buyers_report' => 'تم استرجاع تقرير المشترين بنجاح',
+    'renter_details' => 'تم استرجاع تفاصيل المستأجر بنجاح',
+    'installment_details' => 'تم استرجاع تفاصيل الأقساط بنجاح',
+
+
+
 ];

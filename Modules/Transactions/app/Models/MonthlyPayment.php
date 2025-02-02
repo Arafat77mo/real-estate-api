@@ -57,4 +57,11 @@ class MonthlyPayment extends Model
             'next_due_date' => now()->addMonth(),
         ]);
     }
+
+    public function transaction()
+    {
+        return $this->belongsTo(PropertyTransaction::class, 'property_transaction_id');
+    }
+
+
 }

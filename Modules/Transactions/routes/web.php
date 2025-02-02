@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Transactions\App\Http\Controllers\TransactionsController;
+use Modules\Properties\app\Http\Controllers\Owner\TransactionsController;
 
 /*
 |--------------------------------------------------------------------------

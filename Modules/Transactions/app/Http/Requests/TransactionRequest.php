@@ -13,7 +13,6 @@ class TransactionRequest extends FormRequest
     {
         return [
             'property_id' => 'required|exists:properties,id',
-            'user_id' => 'required|exists:users,id',
             'transaction_type' => 'required|in:sale,rent,installment',
             'price' => 'required|numeric|min:0',
             'duration_months' => 'nullable|integer|min:1',

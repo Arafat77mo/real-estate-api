@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Properties\app\Http\Controllers\Owner\PropertiesController;
+use Modules\Properties\app\Http\Controllers\Owner\UserReportController;
 
 /*
  *--------------------------------------------------------------------------
@@ -26,6 +27,13 @@ Route::middleware(['auth:sanctum','setLocale'])->group(function () {
 
 // عرض جميع العقارات
     Route::get('properties', [PropertiesController::class, 'index']);
+
+    Route::get('reports/renters', [UserReportController::class, 'showRentersReport']);
+    Route::get('reports/installments', [UserReportController::class, 'showInstallmentsReport']);
+    Route::get('reports/buyers', [UserReportController::class, 'showBuyersReport']);
+
+    Route::get('reports/renter/{userId}', [UserReportController::class, 'showRenterDetails']);
+    Route::get('reports/installment/{userId}', [UserReportController::class, 'showInstallmentDetails']);
 });
 
 

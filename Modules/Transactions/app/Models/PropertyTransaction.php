@@ -2,6 +2,7 @@
 
 namespace Modules\Transactions\App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Properties\App\Models\Property;
@@ -24,8 +25,20 @@ class PropertyTransaction extends Model
         return $this->belongsTo(Property::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function installments()
     {
         return $this->hasMany(Installment::class);
     }
+
+    public function monthlyPayments()
+    {
+        return $this->hasMany(MonthlyPayment::class, 'property_transaction_id');
+    }
+
+
 }

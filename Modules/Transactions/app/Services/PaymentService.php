@@ -3,7 +3,9 @@
 namespace Modules\Transactions\app\Services;
 
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Transactions\App\Models\MonthlyPayment;
 use Modules\Transactions\App\Models\PropertyTransaction;
 use Modules\Transactions\app\Traits\InstallmentTrait;
 use Modules\Transactions\app\Traits\MonthlyPaymentTrait;
@@ -14,20 +16,30 @@ class PaymentService
 {
     use StripePaymentTrait, TamaraTabbyPaymentTrait, InstallmentTrait, MonthlyPaymentTrait;
 
-    private function createTransaction($request, $type, $isPaid = false)
+    protected $propertyTransaction;
+    protected $monthlyPayment;
+    protected $authUser;
+
+    public function __construct(PropertyTransaction $propertyTransaction, MonthlyPayment $monthlyPayment)
     {
-        return PropertyTransaction::create([
-            'property_id' => $request->property_id,
-            'user_id' => $request->user_id,
-            'transaction_type' => $type,
-            'price' => $request->price,
-            'is_paid' => $isPaid,
-        ]);
+        $this->propertyTransaction = $propertyTransaction;
+        $this->monthlyPayment = $monthlyPayment;
+        $this->authUser = Auth::user(); // حفظ المستخدم المسجل
     }
 
-    /**
-     * Validate payment method.
-     */
+    private function createTransaction($request, $type, $isPaid = false)
+    {
+        return $this->propertyTransaction->firstOrCreate(
+            ['property_id' => $request->property_id],
+            [
+                'user_id' => $this->authUser->id,
+                'transaction_type' => $type,
+                'price' => $request->price,
+                'is_paid' => $isPaid,
+            ]
+        );
+    }
+
     private function validatePaymentMethod($paymentMethod, $validMethods)
     {
         if (!in_array($paymentMethod, $validMethods)) {
@@ -35,16 +47,12 @@ class PaymentService
         }
     }
 
-    /**
-     * Handle sale transaction.
-     */
     public function handleSale($request)
     {
         $this->validatePaymentMethod($request->payment_method, ['stripe']);
 
-        $existingTransaction = PropertyTransaction::where('property_id', $request->property_id)
-            ->where('transaction_type', 'sale')
-            ->where('is_paid', true)
+        $existingTransaction = $this->propertyTransaction
+            ->where('property_id', $request->property_id)
             ->first();
 
         if ($existingTransaction) {
@@ -53,7 +61,6 @@ class PaymentService
 
         DB::beginTransaction();
         try {
-
             $this->processStripePayment($request->price, $request->payment_method_id);
             $transaction = $this->createTransaction($request, 'sale', true);
             DB::commit();
@@ -64,23 +71,15 @@ class PaymentService
         }
     }
 
-    /**
-     * Handle installment payment transaction.
-     */
     public function handleInstallments($request)
     {
         $this->validatePaymentMethod($request->payment_method, ['tamara', 'tabby']);
 
         DB::beginTransaction();
         try {
-            // Process installment payment
-// الحصول على بيانات العميل من الجلسة
-            $user = auth()->user();
-
-            // استخدام بيانات العميل المسجل
             $customerData = [
-                'name' => $user->name,
-                'email' => $user->email,
+                'name' => $this->authUser->name,
+                'email' => $this->authUser->email,
             ];
 
             $response = $this->processTamaraOrTabbyPayment($request->price, $request->payment_method, $customerData);
@@ -99,26 +98,18 @@ class PaymentService
         }
     }
 
-    /**
-     * Handle rent transaction.
-     */
     public function handleRent($request)
     {
         $this->validatePaymentMethod($request->payment_method, ['stripe', 'tamara', 'tabby']);
 
         DB::beginTransaction();
         try {
-            // Process rent payment
             if ($request->payment_method === 'stripe') {
                 $this->processStripePayment($request->price, $request->payment_method_id);
             } else {
-// الحصول على بيانات العميل من الجلسة
-                $user = auth()->user();
-
-                // استخدام بيانات العميل المسجل
                 $customerData = [
-                    'name' => $user->name,
-                    'email' => $user->email,
+                    'name' => $this->authUser->name,
+                    'email' => $this->authUser->email,
                 ];
 
                 $response = $this->processTamaraOrTabbyPayment($request->price, $request->payment_method, $customerData);
@@ -138,4 +129,3 @@ class PaymentService
         }
     }
 }
-

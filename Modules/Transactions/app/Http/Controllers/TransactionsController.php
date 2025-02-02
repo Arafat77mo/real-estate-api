@@ -3,7 +3,6 @@
 namespace Modules\Transactions\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Modules\Transactions\app\Helpers\ResponseData;
 use Modules\Transactions\App\Http\Requests\TransactionRequest;
 use Modules\Transactions\app\Services\PaymentService;
