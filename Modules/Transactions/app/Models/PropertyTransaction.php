@@ -22,7 +22,7 @@ class PropertyTransaction extends Model
 
     public function property()
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Property::class, 'property_id');
     }
 
     public function user()

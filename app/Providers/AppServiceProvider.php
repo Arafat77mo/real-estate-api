@@ -12,6 +12,8 @@ use Modules\Auth\app\Observers\UserObserver;
 use Modules\Properties\App\Models\Property;
 use Modules\Properties\app\Observers\PropertyObserver;
 use Modules\Properties\App\Policies\PropertyPolicy;
+use Modules\Transactions\App\Models\PropertyTransaction;
+use Modules\Transactions\app\Observers\PropertyTransactionObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
         Property::observe(PropertyObserver::class);
         Gate::define('delete', [PropertyPolicy::class, 'delete']);
 
+        PropertyTransaction::observe(PropertyTransactionObserver::class);
 
     }
 }

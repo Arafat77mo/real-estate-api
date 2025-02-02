@@ -106,6 +106,7 @@ class PaymentService
         try {
             if ($request->payment_method === 'stripe') {
                 $this->processStripePayment($request->price, $request->payment_method_id);
+
             } else {
                 $customerData = [
                     'name' => $this->authUser->name,
@@ -119,6 +120,7 @@ class PaymentService
             }
 
             $transaction = $this->createTransaction($request, 'rent');
+
             $this->createMonthlyPayments($transaction, $request->duration_months);
 
             DB::commit();

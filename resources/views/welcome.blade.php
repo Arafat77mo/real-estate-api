@@ -57,8 +57,8 @@
     </div>
 
             <script type="module">
-                window.Echo.channel('admin.notifications')
-                    .listen('.user-registered', (data) => {
+                window.Echo.channel('tran')
+                    .listen('.createe', (data) => {
                         console.log('Order status updated: ', data);
                         var d1 = document.getElementById('notification');
                         d1.insertAdjacentHTML('beforeend', '<div class="alert alert-success alert-dismissible fade show"><span><i class="fa fa-circle-check"></i>  '+data.message+'</span>' +
