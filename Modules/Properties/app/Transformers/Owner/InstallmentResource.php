@@ -14,12 +14,11 @@ class InstallmentResource extends JsonResource
     {
         return [
             'user_id' => $this->user_id,
-            'user_name' => $this->user->name,
+            'user_name' => $this->user_details->name,
             'paid_amount' => $this->paid_amount,
-            'remaining_amount' => $this->remaining_amount,
+            'pending_amount' => $this->pending_amount,
             'paid_months' => $this->paid_months,
-            'remaining_months' => $this->remaining_months,
-            'next_due_date' => $this->next_due_date,
+            'payments' => PaymentResource::collection($this->payments),
         ];
 
     }

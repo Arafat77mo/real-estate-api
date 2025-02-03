@@ -1,5 +1,7 @@
 <?php
 namespace Modules\Properties\app\Services\Owner;
+use Illuminate\Support\Facades\Auth;
+use Modules\Properties\app\Traits\Payments;
 use Modules\Transactions\App\Models\MonthlyPayment;
 
 use Modules\Properties\app\Transformers\Owner\InstallmentResource;
@@ -9,148 +11,54 @@ use Modules\Transactions\App\Models\PropertyTransaction;
 
 class UserReportService
 {
-    /**
-     * Get renters report including paid amount and user details.
-     */
-    public function getRenters()
-    {
-      $payments = MonthlyPayment::whereHas('transaction', function($query)  {
-        $query
-            ->where('transaction_type', 'rent');
-    })
-        ->orderBy('due_date')
-        ->get();
+    use Payments;
+    protected  $owner;
+    public function __construct(
+        protected PropertyTransaction $propertyTransaction,
+    ) {
 
-        $paidPayments = $payments->where('payment_status', 'paid');
-        $pendingPayments = $payments->where('payment_status', 'pending');
-
-        $paidAmount = $paidPayments->sum('amount');
-        $pendingAmount = $pendingPayments->sum('amount');
-        $paidMonths = $paidPayments->count();
-        $nextDueDate = $pendingPayments->first()->due_date ?? null;
-
-        return [
-            'user_id' => $payments->first()->transaction->user->id ?? '1',
-            'user_name' => $payments->first()->transaction->user->name ?? 'N/A',  // استخدام الكائن وليس المصفوفة
-            'paid_amount' => $paidAmount,
-            'pending_amount' => $pendingAmount,
-            'paid_months' => $paidMonths,
-            'next_due_date' => $nextDueDate,
-        ];
+        $this->owner=\auth()->user();
     }
-
-    /**
-     * Get installments report including paid amount and user details.
-     */
-    public function getInstallments()
-    {
-        $payments = MonthlyPayment::whereHas('transaction', function($query)  {
-            $query
-                ->where('transaction_type', 'installment');
-        })
-            ->orderBy('due_date')
-            ->get();
-
-        $paidPayments = $payments->where('payment_status', 'paid');
-        $pendingPayments = $payments->where('payment_status', 'pending');
-
-        $paidAmount = $paidPayments->sum('amount');
-        $pendingAmount = $pendingPayments->sum('amount');
-        $paidMonths = $paidPayments->count();
-        $remainingMonths = $pendingPayments->count();
-
-        $nextDueDate = $pendingPayments->first()->due_date ?? null;
-
-        return [
-            'user_id' => $payments->first()->transaction->user->id ?? '1',
-            'user_name' => $payments->first()->transaction->user->name ?? 'N/A',  // استخدام الكائن وليس المصفوفة
-            'paid_amount' => $paidAmount,
-            'remaining_amount' => $pendingAmount,
-            'paid_months' => $paidMonths,
-            'remaining_months' => $remainingMonths,
-            'next_due_date' => $nextDueDate,
-
-        ];
-    }
-
-
-    /**
-     * Get buyers report including paid amount and user details.
-     */
     public function getBuyers()
     {
-        return PropertyTransaction::where('transaction_type', 'sale')
-            ->with('user')  // إضافة تفاصيل المستخدم
-            ->get(['user_id', 'property_id', 'price','is_paid', 'created_at']);
+        $transactions = $this->propertyTransaction::with(['user', 'property'])
+            ->whereHas('property', fn($q) => $q->forOwner($this->owner->id))
+            ->where('transaction_type', 'sale')
+            ->fastPaginate(100); // أو simplePaginate(10)
 
+        $transactions->getCollection()->transform(function ($transaction) {
+            return [
+                'user_id' => $transaction->user->id,
+                'user_name' => $transaction->user->name,
+                'property_id' => $transaction->property->id,
+                'property_name' => $transaction->property->name,
+                'is_paid' => $transaction->is_paid,
+            ];
+        });
 
-
+        return $transactions;
 
     }
 
-    /**
-     * Get renter's payment history and remaining dues.
-     */
-    public function getRenterDetails($userId)
+    public function getRenters()
     {
-        $payments = MonthlyPayment::whereHas('transaction', function($query) use ($userId) {
-            $query->where('user_id', $userId)
-                ->where('transaction_type', 'rent');
-        })
-            ->orderBy('due_date')
-            ->get();
-
-        $paidPayments = $payments->where('payment_status', 'paid');
-        $pendingPayments = $payments->where('payment_status', 'pending');
-
-        $paidAmount = $paidPayments->sum('amount');
-        $pendingAmount = $pendingPayments->sum('amount');
-        $paidMonths = $paidPayments->count();
-        $nextDueDate = $pendingPayments->first()->due_date ?? null;
-
-        return [
-            'user_id' => $payments->first()->transaction->user->id ?? '1',
-            'user_name' => $payments->first()->transaction->user->name ?? 'N/A',  // استخدام الكائن وليس المصفوفة
-            'paid_amount' => $paidAmount,
-            'pending_amount' => $pendingAmount,
-            'paid_months' => $paidMonths,
-            'next_due_date' => $nextDueDate,
-            'payments' => PaymentResource::collection($payments),
-        ];
+        return $this->getPayments('rent');
     }
 
-    /**
-     * Get installment details for a user, including paid months, remaining months, and next due date.
-     */
-    public function getInstallmentDetails($userId)
+    public function getInstallments()
     {
-        $payments = MonthlyPayment::whereHas('transaction', function($query) use ($userId) {
-            $query->where('user_id', $userId)
-                ->where('transaction_type', 'installment');
-        })
-            ->orderBy('due_date')
-            ->get();
+        return $this->getPayments('installment');
+    }
 
-        $paidPayments = $payments->where('payment_status', 'paid');
-        $pendingPayments = $payments->where('payment_status', 'pending');
 
-        $paidAmount = $paidPayments->sum('amount');
-        $pendingAmount = $pendingPayments->sum('amount');
-        $paidMonths = $paidPayments->count();
-        $remainingMonths = $pendingPayments->count();
+// استدعاء الدوال
+    public function getRenterDetails($userId, $propertyId)
+    {
+        return $this->getPaymentDetails($userId, $propertyId, 'rent');
+    }
 
-        $nextDueDate = $pendingPayments->first()->due_date ?? null;
-
-        return [
-            'user_id' => $payments->first()->transaction->user->id ?? '1',
-            'user_name' => $payments->first()->transaction->user->name ?? 'N/A',  // استخدام الكائن وليس المصفوفة
-            'paid_amount' => $paidAmount,
-            'remaining_amount' => $pendingAmount,
-            'paid_months' => $paidMonths,
-            'remaining_months' => $remainingMonths,
-            'next_due_date' => $nextDueDate,
-            'payments' => PaymentResource::collection($payments),
-
-        ];
+    public function getInstallmentDetails($userId, $propertyId)
+    {
+        return $this->getPaymentDetails($userId, $propertyId, 'installment');
     }
 }

@@ -32,8 +32,9 @@ Route::middleware(['auth:sanctum','setLocale'])->group(function () {
     Route::get('reports/installments', [UserReportController::class, 'showInstallmentsReport']);
     Route::get('reports/buyers', [UserReportController::class, 'showBuyersReport']);
 
-    Route::get('reports/renter/{userId}', [UserReportController::class, 'showRenterDetails']);
-    Route::get('reports/installment/{userId}', [UserReportController::class, 'showInstallmentDetails']);
+    Route::get('reports/renter/{userId}/{propertyId}', [UserReportController::class, 'showRenterDetails']);
+    Route::get('reports/installment/{userId}/{propertyId}', [UserReportController::class, 'showInstallmentDetails']);
+
 });
 
 

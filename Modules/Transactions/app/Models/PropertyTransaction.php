@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Properties\App\Models\Property;
 
-// use Modules\Transactions\Database\Factories\PropertyTransactionFactory;
 
 class PropertyTransaction extends Model
 {
@@ -40,5 +39,29 @@ class PropertyTransaction extends Model
         return $this->hasMany(MonthlyPayment::class, 'property_transaction_id');
     }
 
+// In PropertyTransaction model
+    public function scopeForOwner($query, $ownerId)
+    {
+        return $query->whereHas('property', fn($q) => $q->where('user_id', $ownerId));
+    }
+
+    public function scopeSales($query)
+    {
+        return $query->where('transaction_type', 'sale');
+    }
+
+    public function scopeInstallments($query)
+    {
+        return $query->where('transaction_type', 'installment');
+    }
+    public function scopeRenters($query)
+    {
+        return $query->where('transaction_type', 'rent');
+    }
+
+    public function scopeForType($query, string $type)
+    {
+        return $query->where('transaction_type', $type);
+    }
 
 }

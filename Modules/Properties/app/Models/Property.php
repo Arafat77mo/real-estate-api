@@ -61,6 +61,11 @@ class Property extends Model implements HasMedia
     {
         return $this->belongsTo(User::class, 'user_id'); // Property belongs to a user
     }
+
+    public function scopeForOwner($query, $ownerId)
+    {
+        return $query->where('user_id', $ownerId);
+    }
     /**
      * Register media collections for the property.
      */

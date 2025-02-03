@@ -62,6 +62,9 @@ class MonthlyPayment extends Model
     {
         return $this->belongsTo(PropertyTransaction::class, 'property_transaction_id');
     }
-
+    public function scopeWithTransactionDetails($query)
+    {
+        return $query->with(['transaction.user', 'transaction.property']);
+    }
 
 }
