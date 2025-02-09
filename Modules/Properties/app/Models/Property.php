@@ -66,11 +66,10 @@ class Property extends Model implements HasMedia
     {
         return $query->where('user_id', $ownerId);
     }
-    /**
-     * Register media collections for the property.
-     */
-
-
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
     /**
      * Scope for filtering properties by location.
      */

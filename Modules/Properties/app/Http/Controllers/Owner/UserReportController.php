@@ -3,6 +3,7 @@
 namespace Modules\Properties\app\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Modules\Properties\app\Services\Owner\UserReportService;
 use Modules\Properties\app\Transformers\Owner\InstallmentResource;
 use Modules\Properties\app\Transformers\Owner\RenterResource;
@@ -45,5 +46,13 @@ class UserReportController extends Controller
     {
         $installmentDetails = $this->reportService->getInstallmentDetails($userId, $propertyId);
         return ResponseData::send('success', __('messages.installment_details'), $installmentDetails);
+    }
+
+
+    public function getDashboardAnalytics()
+    {
+        $analytics = $this->reportService->getDashboardAnalytics();
+
+        return ResponseData::send('success',__('messages.installment_details'),$analytics);
     }
 }

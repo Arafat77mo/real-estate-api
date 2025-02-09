@@ -1,101 +1,159 @@
-# Real Estate API
+# Real Estate API - تحديث README
 
-A robust and scalable backend API for managing real estate properties. Built using Laravel, this API provides features to manage properties, media uploads, users, roles, notifications, and jobs for background processing.
+API خلفي قوي وقابل للتوسع لإدارة العقارات.  
+تم بناء هذه الـ API باستخدام Laravel، وتوفر ميزات لإدارة العقارات، تحميل الوسائط، إدارة المستخدمين، توفير الأدوار والصلاحيات، الإشعارات، ومعالجة المهام في الخلفية.
 
-## Features
+---
 
-- **Property Management**: 
-   - Create, update, delete, and view properties with detailed specifications such as location, price, size, etc.
-   - CRUD operations for managing property details.
-   
-- **Media Handling**: 
-   - Upload and manage images and videos associated with properties, such as property images, cover photos, and videos.
-   
-- **Advanced Search**: 
-   - Filter properties based on various criteria such as location, price, size, and number of bedrooms.
+## **الميزات**
 
-- **Pagination**: 
-   - Efficient pagination using `fastPaginate` for handling large datasets without compromising performance.
+- **إدارة العقارات**
+    - عمليات CRUD (إنشاء، قراءة، تحديث، حذف) لإدارة العقارات مع تفاصيل مثل الموقع، السعر، الحجم، والميزات.
 
-- **Users and Roles && Permission**: 
-   - Manage users with specific roles like `owner`, `user`, etc. 
-   - Assign roles to users and manage permissions for different types of users.
+- **إدارة الوسائط**
+    - رفع وإدارة الصور والفيديوهات المرتبطة بالعقارات (صور العقارات، الصور الرئيسية، والفيديوهات).
 
-- **Notifications**: 
-   - Send notifications to users, such as alerts on new properties, updates, or relevant actions.
+- **البحث المتقدم والفلاتر**
+    - فلترة العقارات استنادًا إلى معايير متعددة مثل الموقع، النطاق السعري، الحجم، وعدد غرف النوم.
 
-- **Jobs**: 
-   - Use Laravel's queue system to handle background jobs like sending emails, processing files, and other tasks.
+- **التصفية باستخدام Pagination**
+    - استخدام `fastPaginate()` للتعامل مع مجموعات بيانات كبيرة بكفاءة.
 
-- **RESTful API**: 
-   - Designed with REST principles for seamless integration with frontend applications and external services.
+- **إدارة المستخدمين، الأدوار والصلاحيات**
+    - إدارة المستخدمين مع أدوار مثل `مالك`، `مستخدم`، و`مشرف`.
+    - تخصيص الأدوار وإدارة الصلاحيات للمستخدمين وفقًا للأدوار المختلفة.
 
-## Prerequisites
+- **الإشعارات**
+    - إرسال إشعارات للمستخدمين حول العقارات الجديدة، التحديثات، أو الإجراءات التي تمت (مثل الشراء، الإيجار، أو التقسيط).
+    - دعم الإشعارات في الوقت الحقيقي (real-time) باستخدام قنوات البث (Broadcasting).
+
+- **المهام في الخلفية (Jobs)**
+    - استخدام نظام الطوابير (Queues) في Laravel لمعالجة المهام الثقيلة مثل إرسال البريد الإلكتروني، معالجة الملفات، وغيرها من العمليات.
+
+- **استخدام Redis للتخزين المؤقت**
+    - تحسين الأداء عبر تخزين بيانات العقارات وعمليات البحث في Redis لتقليل استعلامات قاعدة البيانات.
+
+- **تصميم API وفقًا لمبادئ RESTful**
+    - توفير واجهة موحدة وسهلة التكامل مع التطبيقات الأمامية وخدمات الطرف الثالث.
+
+---
+
+## **المتطلبات**
 
 - PHP >= 8.2
 - Composer
 - MySQL
 - Laravel >= 11
-- Node.js & npm (for asset compilation)
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone git@github.com:Arafat77mo/real-estate-api.git
-
-## Development
-
-### Running Tests
-
-Run the PHPUnit tests to ensure the application is working as expected:
-bash
-php artisan test
-
-
-### Compiling Assets
-
-Compile the frontend assets using Laravel Mix:
-bash
-npm run dev
-
-For production:
-bash
-npm run build
-
-
-## Contributing
-
-1. Fork the repository.
-2. Create a new branch for your feature:
-   
-bash
-   git checkout -b feature-name
-
-3. Commit your changes:
-   
-bash
-   git commit -m "Add a meaningful commit message"
-
-4. Push to the branch:
-   
-bash
-   git push origin feature-name
-
-5. Create a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+- Redis (للتخزين المؤقت)
+- Node.js & npm (لتجميع الأصول الأمامية)
 
 ---
 
-### Author
+## **طريقة التثبيت**
 
-Developed by Muhammad Arafat.
-### Explanation of the Changes:
-- **Users and Roles**: Added endpoints for user management (create, update, delete users), role assignment, and role-based access control.
-- **Notifications**: Included functionality to send and retrieve notifications for users.
-- **Jobs**: Integrated Laravel's background job functionality to handle time-consuming tasks efficiently.
+1. **استنساخ الريبو:**
+   ```bash
+   git clone git@github.com:Arafat77mo/real-estate-api.git
+   cd real-estate-api
 
-This updated README includes all necessary features for user management, role handling, no
+2. **تثبيت الاعتمادات:**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **إعداد متغيرات البيئة:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **إعداد قاعدة البيانات وتشغيل التراكيب (Migrations):**
+   ```bash
+   php artisan migrate --seed
+   ```
+
+5. **بدء الخادم للتطوير:**
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## **تشغيل الاختبارات**
+
+تشغيل اختبارات PHPUnit للتأكد من عمل التطبيق بالشكل المطلوب:
+```bash
+php artisan test
+```
+
+---
+
+## **تجميع الأصول**
+
+- للتطوير:
+  ```bash
+  npm run dev
+  ```
+- للإنتاج:
+  ```bash
+  npm run build
+  ```
+
+---
+
+## **المساهمة**
+
+1. **Fork للمستودع**
+2. **إنشاء فرع جديد:**
+   ```bash
+   git checkout -b feature-name
+   ```
+3. **تنفيذ التغييرات:**
+   ```bash
+   git commit -m "إضافة وصف الميزة"
+   ```
+4. **دفع الفرع:**
+   ```bash
+   git push origin feature-name
+   ```
+5. **إنشاء Pull Request**
+
+---
+
+## **الرخصة**
+
+هذا المشروع مرخص تحت رخصة **MIT**. راجع ملف LICENSE للمزيد من التفاصيل.
+
+---
+
+## **المؤلف**
+
+تم تطويره بواسطة **Muhammad Arafat**.
+
+---
+
+## **التعديلات الأخيرة**
+
+- **Redis للتخزين المؤقت:**
+    - تم استخدام Redis لتخزين نتائج الاستعلامات المكثفة مثل قائمة العقارات وبيانات التقارير، مما يُحسن من أداء التطبيق ويقلل من زمن الاستعلامات.
+
+- **إدارة المستخدمين والأدوار والصلاحيات:**
+    - تمت إضافة واجهات لإدارة المستخدمين مع تعيين الأدوار (مثل `مالك`، `مستخدم`، `مشرف`) وتنفيذ صلاحيات الوصول عبر Laravel Gates.
+
+- **الإشعارات:**
+    - تم تطوير نظام الإشعارات لإعلام المستخدمين والـ Agents بعمليات الشراء، الإيجار، والتقسيط في الوقت الحقيقي، باستخدام الإشعارات عبر قاعدة البيانات والبث (Broadcast).
+
+- **المهام في الخلفية (Jobs):**
+    - تم دمج نظام الطوابير (Queues) لمعالجة المهام الثقيلة مثل إرسال البريد الإلكتروني ومعالجة الملفات، مما يُحسن من سرعة استجابة التطبيق.
+
+- **تحسين البحث والتصفية:**
+    - تم استخدام `fastPaginate()` مع تحسينات إضافية في الفلاتر لتقديم تجربة بحث متقدمة وسريعة.
+
+- **تصميم RESTful API:**
+    - تم تصميم الـ API وفقًا لمبادئ REST لتوفير واجهة متسقة وسهلة التكامل مع التطبيقات الأمامية وخدمات الطرف الثالث.
+
+---
+
+
+

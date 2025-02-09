@@ -1,82 +1,74 @@
 <?php
 
-namespace Modules\Properties\app\Services\User;
+namespace Modules\Properties\App\Services\User;
 
 use App\Models\UserSearch;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 use Modules\Properties\App\Models\Property;
-use Modules\Properties\app\Traits\SaveUserSearch;
-use Modules\Properties\app\Traits\SearchableTrait;
+use Modules\Properties\App\Traits\SaveUserSearch;
+use Modules\Properties\App\Traits\SearchableTrait;
 
 class PropertyService
 {
-    use SearchableTrait,SaveUserSearch;
+    use SearchableTrait, SaveUserSearch;
 
+    protected $property;
+
+    public function __construct(Property $property)
+    {
+        $this->property = $property;
+    }
 
     /**
-     * Get a property by its ID.
-     *
-     * @param int $id
-     * @return Property
+     * Get a property by its ID (with caching)
      */
     public function getById(int $id): Property
     {
-        return Property::with('media','owner')->findOrFail($id);
+        return Cache::remember("property_{$id}", 500, function () use ($id) {
+            return $this->property->with('media', 'owner')->findOrFail($id);
+        });
     }
 
     /**
-     * Get all properties.
-     *
-     * @param $request
-     * @return LengthAwarePaginator
+     * Get all properties with caching.
      */
     public function getAllProperties($request): LengthAwarePaginator
     {
-        $query = Property::search($request['query'] ?? '');
+        return Cache::remember("all_properties_" . md5(json_encode($request)), 500, function () use ($request) {
+            $query = $this->property->search($request['query'] ?? '');
+            $query = $this->applyFilters($query, $request);
 
-        // Apply filters
-        $query = $this->applyFilters($query, $request);
+            $this->saveUserSearch($request);
 
+            $properties = $query->fastPaginate(50000);
+            $properties->load('media', 'owner');
 
-        $this->saveUserSearch($request);
-
-        $properties = $query->fastPaginate(50000);
-
-        $properties->load('media', 'owner');
-
-        return $properties;
+            return $properties;
+        });
     }
 
-
-
+    /**
+     * Recommend properties based on user's last search
+     */
     public function recommendProperties()
     {
         if (!auth()->check()) {
             return response()->json(['message' => 'User not authenticated'], 403);
         }
 
-        // Fetch the user's last search data
-        $lastSearch = UserSearch::query()->where('user_id', auth()->id())->latest()->first();
+        $userId = auth()->id();
+
+        $lastSearch = Cache::remember("last_search_{$userId}", 3600, function () use ($userId) {
+            return UserSearch::where('user_id', $userId)->latest()->first();
+        });
 
         if (!$lastSearch) {
             return response()->json(['message' => 'No search history found'], 404);
         }
 
-        // Ensure filters are stored as an array
         $filters = $lastSearch->filters ?? [];
 
-
-        // Apply filters using a separate method
         return $this->applyUsersFilters($filters)->load('media', 'owner');
     }
-
-
-
-
-
-
-
-
 }

@@ -35,8 +35,9 @@ Route::middleware(['auth:sanctum','setLocale'])->group(function () {
     Route::get('reports/renter/{userId}/{propertyId}', [UserReportController::class, 'showRenterDetails']);
     Route::get('reports/installment/{userId}/{propertyId}', [UserReportController::class, 'showInstallmentDetails']);
 
-});
+    Route::get('/dashboard/analytics', [UserReportController::class, 'getDashboardAnalytics']);
 
+});
 
 
 
