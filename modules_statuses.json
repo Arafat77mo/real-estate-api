@@ -3,5 +3,6 @@
     "Properties": true,
     "Notification": true,
     "Favorite": true,
-    "Transactions": true
+    "Transactions": true,
+    "Chat": true
 }

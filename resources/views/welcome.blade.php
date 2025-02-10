@@ -57,12 +57,12 @@
     </div>
 
             <script type="module">
-                window.Echo.channel('tran')
-                    .listen('.createe', (data) => {
+                window.Echo.channel('chat')
+                    .listen('.chat', (data) => {
                         console.log('Order status updated: ', data);
                         var d1 = document.getElementById('notification');
                         d1.insertAdjacentHTML('beforeend', '<div class="alert alert-success alert-dismissible fade show"><span><i class="fa fa-circle-check"></i>  '+data.message+'</span>' +
-                            '<span><i class="fa fa-circle-check"></i>  '+data.typee+'</span></div>');
+                            '<span><i class="fa fa-circle-check"></i>  '+data.sender['name']+'</span></div>');
                     });
             </script>
     </body>

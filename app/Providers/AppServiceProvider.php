@@ -9,6 +9,8 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Modules\Auth\app\Observers\UserObserver;
+use Modules\Chat\App\Models\ChatMessage;
+use Modules\Chat\app\Observers\ChatMessageObserver;
 use Modules\Properties\App\Models\Property;
 use Modules\Properties\app\Observers\PropertyObserver;
 use Modules\Properties\App\Policies\PropertyPolicy;
@@ -39,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
                 return true;  // Allow all entries in local
             });
         }
+        ChatMessage::observe(ChatMessageObserver::class);
+
         User::observe(UserObserver::class);
 
         Property::observe(PropertyObserver::class);

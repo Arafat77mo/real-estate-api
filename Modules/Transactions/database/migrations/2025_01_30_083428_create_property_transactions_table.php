@@ -34,6 +34,7 @@ return new class extends Migration
         Schema::create('monthly_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_transaction_id')->constrained()->onDelete('cascade'); // ربط الدفع بالمعاملة
+            $table->unsignedBigInteger('property_id');
             $table->decimal('amount', 10, 2); // القيمة الشهرية
             $table->date('due_date'); // تاريخ استحقاق الدفع
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending'); // حالة الدفع
