@@ -43,20 +43,14 @@ class PropertiesController extends Controller
 
     }
 
-    public function update(UpdatePropertyRequest $request, int $id): JsonResponse
+    public function update(UpdatePropertyRequest $request,  $id): JsonResponse
     {
-        try {
-            // الحصول على العقار بناءً على الـ ID
-            $property = $this->propertyService->getById($id);
+
             // تمرير البيانات المحدثة إلى خدمة الـ Property
-            $updatedProperty = $this->propertyService->update($property, $request->validated());
+            $updatedProperty = $this->propertyService->update($id,$request->validated());
 
             return ResponseData::send(trans('messages.success'), trans('properties.success.updated'), new ShowPropertyResource($updatedProperty));
-        } catch (Exception $e) {
-            return ResponseData::send(trans('messages.error'), trans('properties.error.update_failed'), [
-                'error' => $e->getMessage(),
-            ]);
-        }
+
     }
 
     /**
@@ -71,7 +65,7 @@ class PropertiesController extends Controller
 
             $property = $this->propertyService->getById($id);
             if ($property) {
-                return ResponseData::send(trans('messages.success'), trans('properties.success.found'), new ShowPropertyResource($property));
+                return ResponseData::send(trans('messages.success'), trans('properties.success.found'), $property);
 
             }
 

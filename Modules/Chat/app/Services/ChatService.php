@@ -40,7 +40,7 @@ class ChatService
         // Create the message
         $chatMessage = $this->chatMessage::create([
             'chat_thread_id' => $thread->id,
-            'sender_id' => 9,
+            'sender_id' => $user->id,
             'message' => $chatMessageRequest['message'],
         ]);
 

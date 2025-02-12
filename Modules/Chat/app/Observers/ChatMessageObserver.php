@@ -18,9 +18,8 @@ class ChatMessageObserver
         $user =auth()->user();
         // إرسال إشعار للطرفين (المستخدم والوكيل) عند إنشاء الرسالة
 
-        if ($user->id !==  $chatMessage->sender_id) {
             $chatMessage->thread->user->notify(new ChatMessageNotification($chatMessage));
-        }
+
     }
 
     /**

@@ -44,11 +44,9 @@ class PropertyService
     /**
      * تحديث بيانات العقار
      */
-    public function update(Property $property, array $data): false|Property
+    public function update($id, array $data): false|Property
     {
-        if ($this->auth->id() !== $property->user_id) {
-            return false;
-        }
+        $property=$this->property->findOrFail($id);
 
         $property->update($data);
 
@@ -61,7 +59,7 @@ class PropertyService
         }
 
         // تحديث الكاش
-        Cache::forget("property_{$property->id()}");
+        Cache::forget("property_{$property->id}");
         Cache::forget("user_properties_{$this->auth->id()}");
 
         return $property;
@@ -70,30 +68,27 @@ class PropertyService
     /**
      * جلب العقار بناءً على الـ ID مع استخدام Redis
      */
-    public function getById(int $id): false|Property
+    public function getById(int $id): Property
     {
-        $property = Cache::remember("property_{$id}", 3600, function () use ($id) {
-            return $this->property->with('media')->find($id);
-        });
+            return $this->property->with('media')->findOrFail($id);
 
-        if (!$property || $this->auth->id() !== $property->user_id) {
-            return false;
-        }
-
-        return $property;
     }
 
     /**
      * جلب جميع العقارات الخاصة بالمستخدم مع Redis
      */
-    public function getAllProperties($request): LengthAwarePaginator
+    public function getAllProperties($request)
     {
-        return Cache::remember("user_properties_{$this->auth->id()}", 3600, function () use ($request) {
+
             $query = $this->property->search($request['query'] ?? '')
                 ->where('user_id', $this->auth->id());
 
-            return $query->fastPaginate(10)->load('media');
-        });
+            $properties = $query->fastPaginate(100);
+            // تحميل العلاقات (media) بعد الباجنيشن
+            $properties->load('media');
+
+            return $properties;
+
     }
 
     /**

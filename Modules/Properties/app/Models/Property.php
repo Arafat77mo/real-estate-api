@@ -51,10 +51,6 @@ class Property extends Model implements HasMedia
             $query->latest();
         });
 
-        // If the user is not 'owner', apply 'active_and_not_owner' scope
-        if (auth()->check() && auth()->user()->type !== 'owner') {
-            static::addGlobalScope('active_and_not_owner', new ActiveAndNotOwnerScope());
-        }
 
     }
     public function owner()

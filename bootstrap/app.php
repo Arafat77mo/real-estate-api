@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CorsMiddleware;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -28,6 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 EnsureFrontendRequestsAreStateful::class, // Required for SPAs
                 'throttle:api',
                 SubstituteBindings::class,
+                \Illuminate\Http\Middleware\HandleCors::class,
+                \App\Http\Middleware\CorsMiddleware::class,
+
+
             ],
             $middleware->alias([
                 'role' => RoleMiddleware::class,
@@ -35,7 +40,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 'role_or_permission' => RoleOrPermissionMiddleware::class,
                 'setLocale' => \App\Http\Middleware\SetLocale::class,
 
+
             ]),
+
 
 
         ];
