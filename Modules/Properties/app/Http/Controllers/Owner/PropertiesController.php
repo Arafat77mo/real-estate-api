@@ -65,7 +65,7 @@ class PropertiesController extends Controller
 
             $property = $this->propertyService->getById($id);
             if ($property) {
-                return ResponseData::send(trans('messages.success'), trans('properties.success.found'), $property);
+                return ResponseData::send(trans('messages.success'), trans('properties.success.found'),  new ShowPropertyResource($property));
 
             }
 
@@ -85,10 +85,19 @@ class PropertiesController extends Controller
      */
     public function index(CreatePropertySearchRequest $request): JsonResponse
     {
-        $validated = $request->validated();
+        try {
+
+            $validated = $request->validated();
 
         $properties = $this->propertyService->getAllProperties($validated);
         return ResponseData::send(trans('messages.success'), trans('properties.success.list_retrieved'), PropertyResource::collection($properties)->withQueryString());
+        } catch (Exception $e) {
+            return ResponseData::send(trans('messages.error'), trans('properties.error.not_found'), [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+
     }
 
     public function delete($id)

@@ -14,8 +14,10 @@ class ShowPropertyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
+            'name_ar' => $this->getTranslation('name', 'ar'),
+            'name_en' => $this->getTranslation('name', 'en'),
+            'description_ar' => $this->getTranslation('description', 'ar'),
+            'description_en' => $this->getTranslation('description', 'en'),
             'location' => $this->location,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,

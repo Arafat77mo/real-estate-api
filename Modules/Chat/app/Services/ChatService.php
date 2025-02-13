@@ -3,6 +3,7 @@
 namespace Modules\Chat\app\Services;
 
 use Illuminate\Support\Facades\Auth;
+use Modules\Chat\App\Events\ChatThreadUpdated;
 use Modules\Chat\App\Models\ChatMessage;
 use Modules\Chat\App\Models\ChatThread;
 use Modules\Notification\App\Helpers\ResponseData;
@@ -83,6 +84,7 @@ class ChatService
             ->orderBy('created_at', 'asc')
             ->get();
 
+
         return $messages;
     }
 
@@ -108,7 +110,13 @@ class ChatService
             ->withCount(['messages as unread_count' => function ($query) use ($userId) {
                 $query->where('is_read', 0)->where('sender_id', '!=', $userId);
             }])
-            ->orderBy('updated_at', 'desc')
+            ->orderByDesc(
+                ChatThread::select('created_at')
+                    ->from('chat_messages')
+                    ->whereColumn('chat_messages.chat_thread_id', 'chat_threads.id')
+                    ->orderBy('created_at', 'desc')
+                    ->limit(1)
+            )
             ->get();
 
         // Format the data before returning

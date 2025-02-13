@@ -39,8 +39,8 @@ class ChatMessageNotification extends Notification
     {
         return new BroadcastMessage([
             'id'             => $this->id,
-            'user_id' => $this->chatMessage->user_id,
-            'agent_id' => $this->chatMessage->agent_id,
+            'user_id' => $this->chatMessage->thread->user_id,
+            'agent_id' => $this->chatMessage->thread->agent_id,
             'chat_thread_id' => $this->chatMessage->chat_thread_id,
             'message'        => $this->chatMessage->message,
             'sender'         => [
