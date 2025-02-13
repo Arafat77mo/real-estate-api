@@ -26,7 +26,7 @@ class UserReportService
         $transactions = $this->propertyTransaction::with(['user', 'property'])
             ->whereHas('property', fn($q) => $q->forOwner($this->owner->id))
             ->where('transaction_type', 'sale')
-            ->fastPaginate(100); // أو simplePaginate(10)
+            ->fastPaginate(5); // أو simplePaginate(10)
 
         $transactions->getCollection()->transform(function ($transaction) {
             return [

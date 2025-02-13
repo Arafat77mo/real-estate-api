@@ -31,7 +31,7 @@ trait Payments
         MIN(CASE WHEN monthly_payments.payment_status = 'pending' THEN monthly_payments.due_date END) as next_due_date
     ")
             ->groupBy('t.user_id', 't.property_id')
-            ->fastPaginate(500); // or ->paginate() for full pagination
+            ->fastPaginate(6); // or ->paginate() for full pagination
     }
 
     /**
@@ -46,7 +46,7 @@ trait Payments
                 ->where('transaction_type', $transactionType);
         })
             ->orderBy('due_date')
-            ->fastPaginate(50);
+            ->fastPaginate(6);
 
         $paidPayments = $payments->where('payment_status', 'paid');
         $pendingPayments = $payments->where('payment_status', 'pending');
