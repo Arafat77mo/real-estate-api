@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('property_id')->constrained()->onDelete('cascade'); // العقار
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // المستخدم
             $table->enum('transaction_type', ['sale', 'rent', 'installment']); // نوع المعاملة
+            $table->string('duration_months')->nullable();
             $table->decimal('price', 10, 2); // السعر
             $table->boolean('is_paid')->default(false); // حالة الدفع
             $table->timestamps();

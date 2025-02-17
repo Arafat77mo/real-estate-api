@@ -34,6 +34,8 @@ class UserReportService
                 'user_name' => $transaction->user->name,
                 'property_id' => $transaction->property->id,
                 'property_name' => $transaction->property->name,
+                'paid' => $transaction->price,
+                'date' => $transaction->created_at->toFormattedDateString(),
                 'is_paid' => $transaction->is_paid,
             ];
         });

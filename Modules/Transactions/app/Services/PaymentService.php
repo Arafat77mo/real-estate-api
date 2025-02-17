@@ -35,6 +35,7 @@ class PaymentService
                 'user_id' => $this->authUser->id,
                 'transaction_type' => $type,
                 'price' => $request->price,
+                'duration_months' => $request->duration_months,
                 'is_paid' => $isPaid,
             ]
         );

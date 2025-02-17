@@ -46,7 +46,7 @@ trait Payments
                 ->where('transaction_type', $transactionType);
         })
             ->orderBy('due_date')
-            ->fastPaginate(6);
+            ->fastPaginate();
 
         $paidPayments = $payments->where('payment_status', 'paid');
         $pendingPayments = $payments->where('payment_status', 'pending');
@@ -54,14 +54,15 @@ trait Payments
         $paidAmount = $paidPayments->sum('amount');
         $pendingAmount = $pendingPayments->sum('amount');
         $paidMonths = $paidPayments->count();
-        $remainingMonths = $transactionType === 'installment' ? $pendingPayments->count() : null;
+        $remainingMonths =  $pendingPayments->count() ;
         $nextDueDate = $pendingPayments->first()->due_date ?? null;
 
         return [
             'user_id' => $payments->first()->transaction->user->id ?? '1',
             'user_name' => $payments->first()->transaction->user->name ?? 'N/A',
-            'property_id' => $payments->first()->transaction->property->id,
-            'property_name' => $payments->first()->transaction->property->name,
+            'property_id' => $payments->first()->transaction->property->id ?? 'N/A',
+            'property_name' => $payments->first()->transaction->property->name ?? 'N/A',
+            'duration_months' => $payments->first()->transaction->duration_months ?? 'N/A',
             'paid_amount' => $paidAmount,
             'pending_amount' => $pendingAmount,
             'paid_months' => $paidMonths,

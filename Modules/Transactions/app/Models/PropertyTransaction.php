@@ -17,6 +17,7 @@ class PropertyTransaction extends Model
         'price',
         'duration_months',
         'is_paid',
+        'duration_months',
     ];
 
     public function property()
