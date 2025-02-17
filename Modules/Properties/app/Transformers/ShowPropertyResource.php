@@ -4,6 +4,7 @@ namespace Modules\Properties\app\Transformers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Auth\app\Transformers\UserResource;
 
 class ShowPropertyResource extends JsonResource
 {
@@ -14,7 +15,7 @@ class ShowPropertyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'owner' => $this->user_id,
+            'owner' => new UserResource($this->whenLoaded('owner')),
             'name' => $this->name,
             'description' => $this->description,
             'location' => $this->location,

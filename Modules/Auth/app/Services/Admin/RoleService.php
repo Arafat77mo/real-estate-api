@@ -11,6 +11,12 @@ use Spatie\Permission\Models\Role;
 
 class RoleService
 {
+
+    protected function __construct(protected Role $role)
+    {
+
+    }
+
     /**
      * Create a new role along with permissions.
      *
@@ -25,7 +31,7 @@ class RoleService
 
         try {
             // إنشاء الدور
-            $role = Role::create([
+            $role = $this->role::create([
                 'name' => $data['name'],
                 'user_id' => auth()->user()->id,
             ]);
@@ -39,12 +45,12 @@ class RoleService
                 $role->permissions()->sync($data['permissions']);
             }
 
-            DB::commit(); // حفظ التغييرات في قاعدة البيانات
+            DB::commit();
             return $role;
 
         } catch (\Exception $e) {
-            DB::rollBack(); // إلغاء جميع العمليات
-            throw $e; // إرسال الخطأ للاستفادة منه
+            DB::rollBack();
+            throw $e;
         }
     }
 
@@ -53,10 +59,8 @@ class RoleService
         DB::beginTransaction();
 
         try {
-            // العثور على الدور
-            $role = Role::findOrFail($roleId);
+            $role = $this->role::findOrFail($roleId);
 
-            // تحديث اسم الدور
             $role->update([
                 'name' => $data['name'],
                 'user_id' => auth()->user()->id,
@@ -71,12 +75,12 @@ class RoleService
                 $role->permissions()->sync($data['permissions']);
             }
 
-            DB::commit(); // حفظ التغييرات في قاعدة البيانات
+            DB::commit();
             return $role;
 
         } catch (\Exception $e) {
-            DB::rollBack(); // إلغاء جميع العمليات
-            throw $e; // إرسال الخطأ للاستفادة منه
+            DB::rollBack();
+            throw $e;
         }
     }
 
@@ -89,7 +93,7 @@ class RoleService
     public function deleteRole(int $roleId)
     {
         try {
-            $role = Role::findOrFail($roleId);
+            $role = $this->role::findOrFail($roleId);
             return $role->delete();
         } catch (Exception $e) {
             Log::error('Error deleting role: ' . $e->getMessage());
@@ -104,6 +108,6 @@ class RoleService
      */
     public function getAllRoles()
     {
-        return Role::fastPaginate(50);
+        return $this->role::fastPaginate(50);
     }
 }

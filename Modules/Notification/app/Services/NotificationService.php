@@ -8,6 +8,11 @@ use Modules\Notification\app\Models\Notification;
 
 class NotificationService
 {
+
+    protected  function __construct(protected Notification $notification )
+    {
+
+    }
     /**
      * Get all unread notifications for the authenticated user.
      *
@@ -15,7 +20,7 @@ class NotificationService
      */
     public function getUnreadNotifications(): Collection
     {
-        return Notification::where('is_read', false)->get();
+        return $this->notification::where('is_read', false)->get();
     }
 
     /**
@@ -26,7 +31,7 @@ class NotificationService
      */
     public function getNotifications(int $perPage = 10)
     {
-        return Notification::orderBy('created_at', 'desc')->fastPaginate($perPage);
+        return $this->notification::orderBy('created_at', 'desc')->fastPaginate($perPage);
     }
 
     /**
@@ -37,7 +42,7 @@ class NotificationService
      */
     public function markAsRead(int $notificationId): bool
     {
-        $notification = Notification::findOrFail($notificationId);
+        $notification = $this->notification::findOrFail($notificationId);
 
         if ($notification) {
             $notification->update(['is_read' => true]);
@@ -54,7 +59,7 @@ class NotificationService
      */
     public function markAllAsRead(): int
     {
-        return Notification::where('is_read', false)->update(['is_read' => true]);
+        return $this->notification::where('is_read', false)->update(['is_read' => true]);
     }
 
     /**
@@ -65,7 +70,7 @@ class NotificationService
      */
     public function deleteNotification(int $notificationId): bool
     {
-        $notification = Notification::find($notificationId);
+        $notification = $this->notification::find($notificationId);
 
         if ($notification) {
             return $notification->delete();
@@ -81,6 +86,6 @@ class NotificationService
      */
     public function deleteAllNotifications(): int
     {
-        return Notification::delete();
+        return $this->notification::delete();
     }
 }

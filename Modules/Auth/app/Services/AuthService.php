@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Password;
 
 class AuthService
 {
+    protected function __construct(protected User $user )
+    {
+
+    }
+
 
     /**
      * Register a new user.
@@ -18,7 +23,7 @@ class AuthService
      */
     public function register($validatedData)
     {
-        $user = User::create([
+        $user = $this->user::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
@@ -42,7 +47,7 @@ class AuthService
      */
     public function login($credentials): array
     {
-        $user = User::where('email', $credentials['email'])->first();
+        $user = $this->user::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw new Exception(__('messages.invalid_credentials'));

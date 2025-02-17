@@ -5,12 +5,16 @@ use Modules\Favorite\app\Models\Favorite;
 
 class FavoriteService
 {
+    protected  function __construct(protected Favorite $favorite)
+    {
+
+    }
     /**
      * تشغيل/إيقاف العنصر في المفضلة.
      */
     public function toggleFavorite($userId, $propertyId)
     {
-        $favorite = Favorite::firstOrNew(['user_id' => $userId, 'property_id' => $propertyId]);
+        $favorite = $this->favorite::firstOrNew(['user_id' => $userId, 'property_id' => $propertyId]);
 
         if ($favorite->exists) {
             $favorite->delete();
@@ -25,7 +29,7 @@ class FavoriteService
 
     public function getUserFavorites($userId)
     {
-        return Favorite::with(['property.media', 'property.owner']) // Load property media and owner
+        return $this->favorite::with(['property.media', 'property.owner']) // Load property media and owner
         ->where('user_id', $userId)
             ->fastPaginate(10); // Limit results per page
     }

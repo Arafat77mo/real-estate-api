@@ -15,7 +15,7 @@ class FavoriteResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'property' =>new PropertyResource($this->property),
+            'property' => new PropertyResource($this->whenLoaded('property')),
             'created_at' => $this->created_at,
         ];
     }

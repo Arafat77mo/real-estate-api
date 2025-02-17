@@ -24,7 +24,6 @@ class ChatThreadUpdated implements ShouldBroadcast
      */
     public function __construct($thread)
     {
-        // نقوم بتحويل بيانات الثريد باستخدام Resource إذا أردت تنسيقاً معيناً
         $this->thread = $thread;
     }
 
@@ -35,7 +34,6 @@ class ChatThreadUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        // يمكنك استخدام قناة عامة أو خاصة حسب احتياجاتك
         return new Channel('chatThreads');
     }
 

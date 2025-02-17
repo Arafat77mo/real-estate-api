@@ -15,7 +15,7 @@ class PropertyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'owner' => new UserResource($this->owner),
+            'owner' => new UserResource($this->whenLoaded('owner')),
             'name' => $this->name,
             'location' => $this->location,
             'price' => number_format($this->price, 2), // Format price with two decimal places

@@ -13,8 +13,7 @@ class MessageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currentUser = Auth::id(); // معرف المستخدم الحالي
-
+        $currentUser = Auth::id();
         return [
             'id'             => $this->id,
             'user_id' => $this->thread->user_id,
@@ -25,7 +24,7 @@ class MessageResource extends JsonResource
                 'id'       => $this->sender->id,
                 'name'     => $this->sender->name,
             ],
-            'is_me'          => $this->sender_id === $currentUser, // تحديد هل المستخدم هو المرسل
+            'is_me'          => $this->sender_id === $currentUser,
             'created_at'     => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
