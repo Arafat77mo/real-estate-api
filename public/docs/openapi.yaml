@@ -1,0 +1,1191 @@
+openapi: 3.0.3
+info:
+  title: Laravel
+  description: ''
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+paths:
+  /api/documentation:
+    get:
+      summary: 'Display Swagger API page.'
+      operationId: displaySwaggerAPIPage
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <title>L5 Swagger UI</title>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"http://localhost/docs/asset/swagger-ui.css?v=0755b7093afdd36d03212b65315f0209\">\n    <link rel=\"icon\" type=\"image/png\" href=\"http://localhost/docs/asset/favicon-32x32.png?v=40d4f2c38d1cd854ad463f16373cbcb6\" sizes=\"32x32\"/>\n    <link rel=\"icon\" type=\"image/png\" href=\"http://localhost/docs/asset/favicon-16x16.png?v=f0ae831196d55d8f4115b6c5e8ec5384\" sizes=\"16x16\"/>\n    <style>\n    html\n    {\n        box-sizing: border-box;\n        overflow: -moz-scrollbars-vertical;\n        overflow-y: scroll;\n    }\n    *,\n    *:before,\n    *:after\n    {\n        box-sizing: inherit;\n    }\n\n    body {\n      margin:0;\n      background: #fafafa;\n    }\n    </style>\n    </head>\n\n<body >\n<div id=\"swagger-ui\"></div>\n\n<script src=\"http://localhost/docs/asset/swagger-ui-bundle.js?v=070303e1056e80b1e8f8c0227fbb3b69\"></script>\n<script src=\"http://localhost/docs/asset/swagger-ui-standalone-preset.js?v=6b2892eb9458da5c3224817b3984d14c\"></script>\n<script>\n    window.onload = function() {\n        // Build a system\n        const ui = SwaggerUIBundle({\n            dom_id: '#swagger-ui',\n            url: \"http://localhost/docs?api-docs.json\",\n            operationsSorter: null,\n            configUrl: null,\n            validatorUrl: null,\n            oauth2RedirectUrl: \"http://localhost/api/oauth2-callback\",\n\n            requestInterceptor: function(request) {\n                request.headers['X-CSRF-TOKEN'] = '';\n                return request;\n            },\n\n            presets: [\n                SwaggerUIBundle.presets.apis,\n                SwaggerUIStandalonePreset\n            ],\n\n            plugins: [\n                SwaggerUIBundle.plugins.DownloadUrl\n            ],\n\n            layout: \"StandaloneLayout\",\n            docExpansion : \"none\",\n            deepLinking: true,\n            filter: true,\n            persistAuthorization: \"false\",\n\n        })\n\n        window.ui = ui\n\n            }\n</script>\n</body>\n</html>\n"
+      tags:
+        - Endpoints
+      security: []
+  /api/oauth2-callback:
+    get:
+      summary: 'Display Oauth2 callback pages.'
+      operationId: displayOauth2CallbackPages
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "<!doctype html>\n<html lang=\"en-US\">\n<head>\n    <title>Swagger UI: OAuth2 Redirect</title>\n</head>\n<body>\n<script>\n    'use strict';\n    function run () {\n        var oauth2 = window.opener.swaggerUIRedirectOauth2;\n        var sentState = oauth2.state;\n        var redirectUrl = oauth2.redirectUrl;\n        var isValid, qp, arr;\n\n        if (/code|token|error/.test(window.location.hash)) {\n            qp = window.location.hash.substring(1).replace('?', '&');\n        } else {\n            qp = location.search.substring(1);\n        }\n\n        arr = qp.split(\"&\");\n        arr.forEach(function (v,i,_arr) { _arr[i] = '\"' + v.replace('=', '\":\"') + '\"';});\n        qp = qp ? JSON.parse('{' + arr.join() + '}',\n                function (key, value) {\n                    return key === \"\" ? value : decodeURIComponent(value);\n                }\n        ) : {};\n\n        isValid = qp.state === sentState;\n\n        if ((\n          oauth2.auth.schema.get(\"flow\") === \"accessCode\" ||\n          oauth2.auth.schema.get(\"flow\") === \"authorizationCode\" ||\n          oauth2.auth.schema.get(\"flow\") === \"authorization_code\"\n        ) && !oauth2.auth.code) {\n            if (!isValid) {\n                oauth2.errCb({\n                    authId: oauth2.auth.name,\n                    source: \"auth\",\n                    level: \"warning\",\n                    message: \"Authorization may be unsafe, passed state was changed in server. The passed state wasn't returned from auth server.\"\n                });\n            }\n\n            if (qp.code) {\n                delete oauth2.state;\n                oauth2.auth.code = qp.code;\n                oauth2.callback({auth: oauth2.auth, redirectUrl: redirectUrl});\n            } else {\n                let oauthErrorMsg;\n                if (qp.error) {\n                    oauthErrorMsg = \"[\"+qp.error+\"]: \" +\n                        (qp.error_description ? qp.error_description+ \". \" : \"no accessCode received from the server. \") +\n                        (qp.error_uri ? \"More info: \"+qp.error_uri : \"\");\n                }\n\n                oauth2.errCb({\n                    authId: oauth2.auth.name,\n                    source: \"auth\",\n                    level: \"error\",\n                    message: oauthErrorMsg || \"[Authorization failed]: no accessCode received from the server.\"\n                });\n            }\n        } else {\n            oauth2.callback({auth: oauth2.auth, token: qp, isValid: isValid, redirectUrl: redirectUrl});\n        }\n        window.close();\n    }\n\n    if (document.readyState !== 'loading') {\n        run();\n    } else {\n        document.addEventListener('DOMContentLoaded', function () {\n            run();\n        });\n    }\n</script>\n</body>\n</html>\n"
+      tags:
+        - Endpoints
+      security: []
+  /api/register:
+    post:
+      summary: 'Register a new user.'
+      operationId: registerANewUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: raf
+                  nullable: false
+                email:
+                  type: string
+                  description: 'يجب أن يكون value عنوان بريد إلكتروني صالح. لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: pgoyette@example.com
+                  nullable: false
+                password:
+                  type: string
+                  description: 'يجب أن يكون value على الأقل 8 حرفًا.'
+                  example: 'w2hXD4AQVt{;*M4@lr'
+                  nullable: false
+                type:
+                  type: string
+                  description: ''
+                  example: owner
+                  nullable: false
+                  enum:
+                    - owner
+                    - user
+                role:
+                  type: string
+                  description: 'The <code>name</code> of an existing record in the roles table.'
+                  example: nemo
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+                - type
+                - role
+      security: []
+  /api/login:
+    post:
+      summary: 'Login the user.'
+      operationId: loginTheUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: ypfiovecgdtnehtlunraa
+                  nullable: false
+                email:
+                  type: string
+                  description: 'يجب أن يكون value عنوان بريد إلكتروني صالح. لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: joelle.ullrich@example.org
+                  nullable: false
+                password:
+                  type: string
+                  description: 'يجب أن يكون value على الأقل 8 حرفًا.'
+                  example: 'ZB8!g<:P[q'
+                  nullable: false
+                type:
+                  type: string
+                  description: ''
+                  example: owner
+                  nullable: false
+                  enum:
+                    - owner
+                    - user
+                role:
+                  type: string
+                  description: 'The <code>name</code> of an existing record in the roles table.'
+                  example: expedita
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+                - type
+                - role
+      security: []
+  /api/password/email:
+    post:
+      summary: 'Send password reset link.'
+      operationId: sendPasswordResetLink
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: wghwgswthhitorfcdvmjvdrt
+                  nullable: false
+                email:
+                  type: string
+                  description: 'يجب أن يكون value عنوان بريد إلكتروني صالح. لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: madaline.marquardt@example.org
+                  nullable: false
+                password:
+                  type: string
+                  description: 'يجب أن يكون value على الأقل 8 حرفًا.'
+                  example: '127YllvGI6C%)d:'
+                  nullable: false
+                type:
+                  type: string
+                  description: ''
+                  example: owner
+                  nullable: false
+                  enum:
+                    - owner
+                    - user
+                role:
+                  type: string
+                  description: 'The <code>name</code> of an existing record in the roles table.'
+                  example: quo
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+                - type
+                - role
+      security: []
+  /api/password/reset:
+    post:
+      summary: 'Reset the user password.'
+      operationId: resetTheUserPassword
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: olifcldcmhgjhw
+                  nullable: false
+                email:
+                  type: string
+                  description: 'يجب أن يكون value عنوان بريد إلكتروني صالح. لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: name23@example.com
+                  nullable: false
+                password:
+                  type: string
+                  description: 'يجب أن يكون value على الأقل 8 حرفًا.'
+                  example: 'w&.7:.^49Nh*1~>zTDN^'
+                  nullable: false
+                type:
+                  type: string
+                  description: ''
+                  example: user
+                  nullable: false
+                  enum:
+                    - owner
+                    - user
+                role:
+                  type: string
+                  description: 'The <code>name</code> of an existing record in the roles table.'
+                  example: enim
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+                - type
+                - role
+      security: []
+  /api/user:
+    get:
+      summary: ''
+      operationId: getApiUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/threads:
+    get:
+      summary: ''
+      operationId: getApiThreads
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/messages/chatThread:
+    post:
+      summary: ''
+      operationId: postApiMessagesChatThread
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_thread_id:
+                  type: string
+                  description: 'The <code>id</code> of an existing record in the chat_threads table.'
+                  example: quaerat
+                  nullable: false
+                user_id:
+                  type: string
+                  description: 'The <code>id</code> of an existing record in the users table.'
+                  example: facilis
+                  nullable: false
+              required:
+                - chat_thread_id
+                - user_id
+      security: []
+  /api/messages:
+    post:
+      summary: ''
+      operationId: postApiMessages
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 1000 حرفًا.'
+                  example: ajiikf
+                  nullable: false
+                agent_id:
+                  type: string
+                  description: 'The <code>id</code> of an existing record in the users table.'
+                  example: sit
+                  nullable: false
+              required:
+                - message
+                - agent_id
+      security: []
+  /api/favorite:
+    get:
+      summary: ''
+      operationId: getApiFavorite
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/favorites/toggle:
+    post:
+      summary: 'تشغيل/إيقاف العنصر في المفضلة.'
+      operationId: ''
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                property_id:
+                  type: integer
+                  description: 'The <code>id</code> of an existing record in the properties table.'
+                  example: 19
+                  nullable: false
+              required:
+                - property_id
+      security: []
+  /api/favorites:
+    get:
+      summary: ''
+      operationId: getApiFavorites
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/notifications/unread:
+    get:
+      summary: 'Get unread notifications for the authenticated user.'
+      operationId: getUnreadNotificationsForTheAuthenticatedUser
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/notifications:
+    get:
+      summary: 'Get all notifications for the authenticated user with pagination.'
+      operationId: getAllNotificationsForTheAuthenticatedUserWithPagination
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    delete:
+      summary: 'Delete all notifications for the authenticated user.'
+      operationId: deleteAllNotificationsForTheAuthenticatedUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/notifications/{notificationId}/read':
+    post:
+      summary: 'Mark a notification as read.'
+      operationId: markANotificationAsRead
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: notificationId
+        description: ''
+        example: et
+        required: true
+        schema:
+          type: string
+  /api/notifications/read:
+    post:
+      summary: 'Mark all notifications as read for the authenticated user.'
+      operationId: markAllNotificationsAsReadForTheAuthenticatedUser
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  '/api/notifications/{notificationId}':
+    delete:
+      summary: 'Delete a notification.'
+      operationId: deleteANotification
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: notificationId
+        description: ''
+        example: in
+        required: true
+        schema:
+          type: string
+  /api/properties:
+    post:
+      summary: 'Store a new property.'
+      operationId: storeANewProperty
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: object
+                  description: ''
+                  example: []
+                  nullable: false
+                  properties:
+                    en:
+                      type: string
+                      description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                      example: w
+                      nullable: false
+                    ar:
+                      type: string
+                      description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                      example: svzeopxnpokjgcwbqsiccqt
+                      nullable: false
+                  required:
+                    - en
+                    - ar
+                description:
+                  type: object
+                  description: ''
+                  example: []
+                  nullable: false
+                  properties:
+                    en:
+                      type: string
+                      description: ''
+                      example: maxime
+                      nullable: false
+                    ar:
+                      type: string
+                      description: ''
+                      example: sunt
+                      nullable: false
+                  required:
+                    - en
+                    - ar
+                location:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: wyrulxnamdsi
+                  nullable: false
+                price:
+                  type: number
+                  description: ''
+                  example: 78712.736367
+                  nullable: false
+                status:
+                  type: string
+                  description: ''
+                  example: active
+                  nullable: false
+                  enum:
+                    - active
+                    - inactive
+                property_images:
+                  type: array
+                  description: 'يجب أن يكون value صورة. لا يجوز أن يكون value أكبر من 3000 كيلو بايت.'
+                  items:
+                    type: string
+                    format: binary
+                latitude:
+                  type: number
+                  description: 'يجب أن يكون value بين -90 و 90.'
+                  example: -89
+                  nullable: true
+                longitude:
+                  type: number
+                  description: 'يجب أن يكون value بين -180 و 180.'
+                  example: -180
+                  nullable: true
+                rooms:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 84
+                  nullable: false
+                bathrooms:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 54
+                  nullable: false
+                living_room_size:
+                  type: number
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 10
+                  nullable: false
+                additional_features:
+                  type: string
+                  description: ''
+                  example: voluptas
+                  nullable: true
+                type:
+                  type: string
+                  description: ''
+                  example: villa
+                  nullable: false
+                  enum:
+                    - apartment
+                    - villa
+                    - land
+                    - office
+                    - commercial
+              required:
+                - name
+                - description
+                - location
+                - price
+                - status
+                - rooms
+                - bathrooms
+                - living_room_size
+                - type
+      security: []
+    get:
+      summary: 'Get a list of properties.'
+      operationId: getAListOfProperties
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: ''
+                  example: dolore
+                  nullable: true
+                location:
+                  type: string
+                  description: ''
+                  example: rerum
+                  nullable: true
+                type:
+                  type: string
+                  description: ''
+                  example: commercial
+                  nullable: true
+                  enum:
+                    - apartment
+                    - villa
+                    - land
+                    - office
+                    - commercial
+                min_price:
+                  type: number
+                  description: ''
+                  example: 62920.30484309
+                  nullable: true
+                max_price:
+                  type: number
+                  description: ''
+                  example: 10.655
+                  nullable: true
+                rooms:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 84
+                  nullable: true
+                bathrooms:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 44
+                  nullable: true
+                sort_by:
+                  type: string
+                  description: ''
+                  example: bathrooms
+                  nullable: true
+                  enum:
+                    - price
+                    - name
+                    - location
+                    - rooms
+                    - bathrooms
+                sort_direction:
+                  type: string
+                  description: ''
+                  example: desc
+                  nullable: true
+                  enum:
+                    - asc
+                    - desc
+                per_page:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 1. لا يجوز أن يكون value أكبر من 100.'
+                  example: 4
+                  nullable: true
+                page:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 1.'
+                  example: 9
+                  nullable: true
+      security: []
+  '/api/properties/{id}':
+    post:
+      summary: ''
+      operationId: postApiPropertiesId
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: object
+                  description: ''
+                  example: []
+                  nullable: false
+                  properties:
+                    en:
+                      type: string
+                      description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                      example: usbs
+                      nullable: false
+                    ar:
+                      type: string
+                      description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                      example: r
+                      nullable: false
+                  required:
+                    - en
+                    - ar
+                description:
+                  type: object
+                  description: ''
+                  example: []
+                  nullable: false
+                  properties:
+                    en:
+                      type: string
+                      description: ''
+                      example: est
+                      nullable: false
+                    ar:
+                      type: string
+                      description: ''
+                      example: dolorem
+                      nullable: false
+                  required:
+                    - en
+                    - ar
+                location:
+                  type: string
+                  description: 'لا يجوز أن يكون value أكبر من 255 حرفًا.'
+                  example: nbscuydsknhuk
+                  nullable: false
+                price:
+                  type: number
+                  description: ''
+                  example: 0.4096
+                  nullable: false
+                status:
+                  type: string
+                  description: ''
+                  example: active
+                  nullable: false
+                  enum:
+                    - active
+                    - inactive
+                property_images:
+                  type: array
+                  description: 'يجب أن يكون value صورة. لا يجوز أن يكون value أكبر من 2048 كيلو بايت.'
+                  items:
+                    type: string
+                    format: binary
+                latitude:
+                  type: number
+                  description: 'يجب أن يكون value بين -90 و 90.'
+                  example: -89
+                  nullable: true
+                longitude:
+                  type: number
+                  description: 'يجب أن يكون value بين -180 و 180.'
+                  example: -180
+                  nullable: true
+                rooms:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 86
+                  nullable: false
+                bathrooms:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 2
+                  nullable: false
+                living_room_size:
+                  type: number
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 65
+                  nullable: false
+                additional_features:
+                  type: string
+                  description: ''
+                  example: odio
+                  nullable: true
+                type:
+                  type: string
+                  description: ''
+                  example: villa
+                  nullable: false
+                  enum:
+                    - apartment
+                    - villa
+                    - land
+                    - office
+                    - commercial
+              required:
+                - name
+                - description
+                - location
+                - price
+                - status
+                - rooms
+                - bathrooms
+                - living_room_size
+                - type
+      security: []
+    get:
+      summary: 'Show the details of a property.'
+      operationId: showTheDetailsOfAProperty
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    delete:
+      summary: ''
+      operationId: deleteApiPropertiesId
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the property.'
+        example: architecto
+        required: true
+        schema:
+          type: string
+  /api/reports/renters:
+    get:
+      summary: ''
+      operationId: getApiReportsRenters
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/reports/installments:
+    get:
+      summary: ''
+      operationId: getApiReportsInstallments
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/reports/buyers:
+    get:
+      summary: ''
+      operationId: getApiReportsBuyers
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  '/api/reports/renter/{userId}/{propertyId}':
+    get:
+      summary: ''
+      operationId: getApiReportsRenterUserIdPropertyId
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: userId
+        description: ''
+        example: reprehenderit
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: propertyId
+        description: ''
+        example: incidunt
+        required: true
+        schema:
+          type: string
+  '/api/reports/installment/{userId}/{propertyId}':
+    get:
+      summary: ''
+      operationId: getApiReportsInstallmentUserIdPropertyId
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: userId
+        description: ''
+        example: distinctio
+        required: true
+        schema:
+          type: string
+      -
+        in: path
+        name: propertyId
+        description: ''
+        example: quaerat
+        required: true
+        schema:
+          type: string
+  /api/dashboard/analytics:
+    get:
+      summary: ''
+      operationId: getApiDashboardAnalytics
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/process-transaction:
+    post:
+      summary: 'معالجة المعاملات بأنواعها المختلفة'
+      operationId: ''
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                property_id:
+                  type: string
+                  description: 'The <code>id</code> of an existing record in the properties table.'
+                  example: quis
+                  nullable: false
+                transaction_type:
+                  type: string
+                  description: ''
+                  example: rent
+                  nullable: false
+                  enum:
+                    - sale
+                    - rent
+                    - installment
+                price:
+                  type: number
+                  description: 'يجب أن يكون value على الأقل 0.'
+                  example: 25
+                  nullable: false
+                duration_months:
+                  type: integer
+                  description: 'يجب أن يكون value على الأقل 1.'
+                  example: 89
+                  nullable: true
+                payment_method:
+                  type: string
+                  description: ''
+                  example: tabby
+                  nullable: false
+                  enum:
+                    - stripe
+                    - tamara
+                    - tabby
+                payment_method_id:
+                  type: string
+                  description: 'This field is required when <code>payment_method</code> is <code>stripe</code>.'
+                  example: null
+                  nullable: false
+              required:
+                - property_id
+                - transaction_type
+                - price
+                - payment_method
+      security: []
+  /api/payment/success:
+    get:
+      summary: ''
+      operationId: getApiPaymentSuccess
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  /api/payment/cancel:
+    get:
+      summary: ''
+      operationId: getApiPaymentCancel
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+tags:
+  -
+    name: Endpoints
+    description: ''

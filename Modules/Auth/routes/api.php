@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\App\Http\Controllers\AuthController;
+use Modules\Auth\app\Http\Controllers\SocialAuthController;
 
 /*
  *--------------------------------------------------------------------------
@@ -29,7 +30,12 @@ Route::post('password/email', [AuthController::class, 'sendPasswordResetLink']);
 
 // Reset password
 Route::post('password/reset', [AuthController::class, 'resetPassword']);
+
+
+
 });
+Route::get('login/{provider}', [SocialAuthController::class, 'redirectToProvider']);
+Route::get('auth/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
