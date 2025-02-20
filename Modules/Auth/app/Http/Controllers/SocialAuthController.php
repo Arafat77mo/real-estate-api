@@ -28,13 +28,7 @@ class SocialAuthController extends Controller
 
         $user = $this->socialAuthService->findOrCreateUser($provider, $socialUser);
 
-        return ResponseData::send(
-            __('messages.success'),
-            __('messages.user_logged_in'),
-            [
-                'token' => $user['token'],
-                'user' => new AuthResource($user['user']),
-            ]
-        );
+        return redirect()->to('http://localhost:3000/login?token=' . urlencode($user['token']));
+
     }
 }

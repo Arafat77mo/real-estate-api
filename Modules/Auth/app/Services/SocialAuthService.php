@@ -13,12 +13,16 @@ class SocialAuthService
      * الحصول على بيانات المستخدم من المزود
      *
      * @param string $provider
-     * @return SocialiteUser
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getSocialUser(string $provider)
     {
-        return Socialite::driver($provider)->stateless()->user();
-    }
+        return response()->json([
+            'url' => Socialite::driver($provider)
+                ->stateless()
+                ->redirect()
+                ->getTargetUrl(),
+        ]);    }
 
     /**
      * البحث عن المستخدم أو إنشاؤه باستخدام بيانات تسجيل الدخول الاجتماعي

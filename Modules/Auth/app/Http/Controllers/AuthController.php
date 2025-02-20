@@ -3,21 +3,18 @@
 namespace Modules\Auth\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Modules\Auth\App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Modules\Auth\App\Helpers\ResponseData;
 use Modules\Auth\App\Http\Requests\CreateAuthRequest;
 use Illuminate\Support\Facades\Log;
+use Modules\Auth\App\Services\AuthService;
 use Modules\Auth\App\Transformers\AuthResource;
 
 class AuthController extends Controller
 {
-    protected $authService;
 
-    public function __construct(AuthService $authService)
+    public function __construct( protected AuthService $authService)
     {
-        $this->authService = $authService;
     }
 
     /**

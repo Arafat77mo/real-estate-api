@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Password;
 
 class AuthService
 {
-    protected function __construct(protected User $user )
+    public function __construct(protected User $user )
     {
 
     }
